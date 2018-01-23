@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Даниил Чернявский](https://up.htmlacademy.ru/javascript/12/user/502911).
-* Наставник: `Неизвестно`.
+* Наставник: [Олег Петров](https://up.htmlacademy.ru/javascript/12/user/42390).
 
 ---
 
