@@ -39,12 +39,18 @@ var AdParams = {
   }
 };
 
+var PinImgParams = {
+  WIDTH: 40,
+  HEIGHT: 40
+};
+
 var map = document.querySelector('.map');
+var mapPins = map.querySelector('.map__pins');
 
 var generateAdArray = function () {
   var adArr = [];
-  for (var i = 0; i < AdParams.AD_COUNT; i++) {
-    adArr.push(generateAd());
+  for (var i = 1; i < AdParams.AD_COUNT; i++) {
+    adArr.push(generateAd(i));
   }
   return adArr;
 };
@@ -66,7 +72,7 @@ var generateAd = function (adIndex) {
 
     offer: {
       title: title,
-      address: locX + ' ' + locY,
+      address: locX + ', ' + locY,
       price: price,
       type: houseType,
       rooms: rooms,
@@ -117,15 +123,57 @@ var getCheckTime = function (arrTime) {
 
 var getFeatures = function () {
   var newArr = [];
-  var indexRandom = Math.floor(getRandomNumber(0, AdParams.FEATURES_ITEMS.length));
-  for (var i = indexRandom; i >= 0; i--) {
-    newArr[i] = AdParams.FEATURES_ITEMS[i];
+  var randomNumber = Math.floor(getRandomNumber(0, AdParams.FEATURES_ITEMS.length));
+  var rand;
+
+  for (var i = randomNumber; i >= 0; i--) {
+    rand = Math.floor(Math.random() * AdParams.FEATURES_ITEMS.length);
+    newArr[i] = AdParams.FEATURES_ITEMS[rand];
   }
-  return newArr.sort(compareRandom);
+
+  return newArr;
 };
 
 var getPhotos = function () {
   return AdParams.PHOTOS_ITEMS.sort(compareRandom);
+};
+
+var renderPin = function (advert) {
+  var mapPin = document.createElement('button');
+  var mapAvatar = document.createElement('img');
+
+  mapPin.classList.add('map__pin');
+  mapPin.style.left = advert.location.x + 'px';
+  mapPin.style.top = advert.location.y + 'px';
+
+  mapAvatar.src = advert.author.avatar;
+  mapAvatar.width = PinImgParams.WIDTH;
+  mapAvatar.height = PinImgParams.HEIGHT;
+  mapAvatar.draggable = false;
+
+  mapPin.appendChild(mapAvatar);
+
+  return mapPin;
+};
+
+var createPins = function (advertsArray) {
+  var pinsArray = [];
+
+  advertsArray.forEach(function (item) {
+    pinsArray.push(renderPin(item));
+  });
+
+  return pinsArray;
+};
+
+var generateDocumentFragment = function (arrPin) {
+  var fragment = document.createDocumentFragment();
+
+  arrPin.forEach(function (pin) {
+    fragment.appendChild(pin);
+  });
+
+  return fragment;
 };
 
 var getRandomNumber = function (min, max) {
@@ -136,4 +184,9 @@ var compareRandom = function () {
   return Math.random() - 0.5;
 };
 
+var adverts = generateAdArray();
+var createPinsArray = createPins(adverts);
+var documentFragment = generateDocumentFragment(createPinsArray);
+
 map.classList.remove('map--faded');
+mapPins.appendChild(documentFragment);
