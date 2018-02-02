@@ -23,7 +23,7 @@ var AdParams = {
 
   CHECK_ITEMS: ['12:00', '13:00', '14:00'],
 
-  FEATURES_ITEMS: ['wifi', 'dishwater', 'parking', 'washer', 'elevator', 'conditioner'],
+  FEATURES_ITEMS: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
 
   PHOTOS_ITEMS: [
     'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -46,6 +46,8 @@ var PinImgParams = {
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
+var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
+var mapFiltersContainter = document.querySelector('.map__filters-container');
 
 var generateAdArray = function () {
   var adArr = [];
@@ -63,7 +65,6 @@ var generateAd = function (adIndex) {
   var houseType = getHouseType(title);
   var rooms = Math.floor(getRandomNumber(AdParams.ROOMS_RANGE.MIN, AdParams.ROOMS_RANGE.MAX));
   var guests = Math.floor(getRandomNumber(1, AdParams.MAX_GUESTS));
-  var check = getCheckTime(AdParams.CHECK_ITEMS);
 
   return {
     author: {
@@ -77,8 +78,8 @@ var generateAd = function (adIndex) {
       type: houseType,
       rooms: rooms,
       guests: guests,
-      checkin: check,
-      checkout: check,
+      checkin: getCheckTime(AdParams.CHECK_ITEMS),
+      checkout: getCheckTime(AdParams.CHECK_ITEMS),
       features: getFeatures(),
       description: '',
       photos: getPhotos()
@@ -99,8 +100,8 @@ var getAvatar = function (index) {
   var pathAvatar = 'img/avatars/user';
   var typeAvatar = '.png';
   pathAvatar = (index <= 8) ? pathAvatar + '0' : pathAvatar;
-
-  return pathAvatar + index + typeAvatar;
+  var result = pathAvatar + index + typeAvatar;
+  return result;
 };
 
 var getHouseType = function (title) {
@@ -127,11 +128,22 @@ var getFeatures = function () {
   var rand;
 
   for (var i = randomNumber; i >= 0; i--) {
-    rand = Math.floor(Math.random() * AdParams.FEATURES_ITEMS.length);
-    newArr[i] = AdParams.FEATURES_ITEMS[rand];
+    rand = AdParams.FEATURES_ITEMS[Math.floor(Math.random() * AdParams.FEATURES_ITEMS.length)];
+    newArr[i] = rand;
   }
 
-  return newArr;
+  return getUnique(newArr);
+};
+
+var getUnique = function (arr) {
+  var obj = {};
+
+  for (var i = 0; i < arr.length; i++) {
+    var str = arr[i];
+    obj[str] = true;
+  }
+
+  return Object.keys(obj);
 };
 
 var getPhotos = function () {
@@ -176,6 +188,80 @@ var generateDocumentFragment = function (arrPin) {
   return fragment;
 };
 
+var createAdverts = function (advert) {
+  var cardAdvert = mapCardTemplate.cloneNode(true);
+
+  var cardTitle = cardAdvert.querySelector('h3');
+  var cardAddress = cardAdvert.querySelector('small');
+  var cardPrice = cardAdvert.querySelector('.popup__price');
+  var cardHouse = cardAdvert.querySelector('h4');
+  var cardRooms = cardAdvert.querySelector('.popup__room');
+  var cardCheck = cardAdvert.querySelector('.popup__check');
+  var cardFeatures = cardAdvert.querySelector('.popup__features');
+  var cardDescription = cardAdvert.querySelector('.popup__description');
+  var cardAvatar = cardAdvert.querySelector('.popup__avatar');
+  var cardPhotos = cardAdvert.querySelector('.popup__pictures');
+
+  cardTitle.textContent = advert.offer.title;
+  cardAddress.textContent = advert.offer.address;
+  cardPrice.textContent = advert.offer.price + '\t\u20BD/ночь';
+  cardHouse.textContent = getTranslate(advert.offer.type);
+  cardRooms.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
+  cardCheck.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+  getRenderFeatures(cardFeatures, advert.offer.features);
+  cardDescription.textContent = advert.offer.description;
+  cardAvatar.src = advert.author.avatar;
+  getRenderImages(cardPhotos, advert.offer.photos);
+
+  return cardAdvert;
+};
+
+var getTranslate = function (advert) {
+  if (advert === 'flat') {
+    advert = 'Квартира';
+  } else if (advert === 'house') {
+    advert = 'Бунгало';
+  } else {
+    advert = 'Дом';
+  }
+
+  return advert;
+};
+
+var getRenderFeatures = function (cardFeatures, newFeatures) {
+  while (cardFeatures.hasChildNodes()) {
+    cardFeatures.removeChild(cardFeatures.lastChild);
+  }
+
+  newFeatures.forEach(function (feature) {
+    var li = document.createElement('li');
+    li.className = 'feature feature--' + feature;
+    cardFeatures.appendChild(li);
+  });
+
+  return cardFeatures;
+};
+
+var getRenderImages = function (cardPhotos, newPhotos) {
+  while (cardPhotos.hasChildNodes()) {
+    cardPhotos.removeChild(cardPhotos.lastChild);
+  }
+
+  newPhotos.forEach(function (photos) {
+    var li = document.createElement('li');
+    var img = document.createElement('img');
+
+    img.src = photos;
+    img.width = PinImgParams.WIDTH;
+    img.height = PinImgParams.HEIGHT;
+
+    cardPhotos.appendChild(li);
+    li.appendChild(img);
+  });
+
+  return cardPhotos;
+};
+
 var getRandomNumber = function (min, max) {
   return Math.random() * (max - min) + min;
 };
@@ -187,6 +273,9 @@ var compareRandom = function () {
 var adverts = generateAdArray();
 var createPinsArray = createPins(adverts);
 var documentFragment = generateDocumentFragment(createPinsArray);
+var advertsFirst = createAdverts(adverts[0]);
+
 
 map.classList.remove('map--faded');
 mapPins.appendChild(documentFragment);
+map.insertBefore(advertsFirst, mapFiltersContainter);
