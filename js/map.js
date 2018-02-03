@@ -1,6 +1,16 @@
 'use strict';
 
-var AdParams = {
+/**
+ * Minimum value
+ * @const {number} MIN_RANGE
+ */
+var MIN_RANGE = 0;
+
+/**
+ * Describing ads nearby
+ * @type {Object}
+ */
+var AdsParams = {
   AD_COUNT: 8,
 
   TITLES: ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец',
@@ -39,9 +49,14 @@ var AdParams = {
   }
 };
 
+/**
+ * Describing pin params
+ * @enum {number} PinImgParams
+ */
 var PinImgParams = {
   WIDTH: 40,
-  HEIGHT: 40
+  HEIGHT: 40,
+  ARROW_HEIGHT: 20
 };
 
 var map = document.querySelector('.map');
@@ -49,22 +64,32 @@ var mapPins = map.querySelector('.map__pins');
 var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
 var mapFiltersContainter = document.querySelector('.map__filters-container');
 
+/**
+ * Fill array of ads
+ * @return {Array}
+ */
 var generateAdArray = function () {
   var adArr = [];
-  for (var i = 1; i < AdParams.AD_COUNT; i++) {
+  for (var i = 1; i < AdsParams.AD_COUNT; i++) {
     adArr.push(generateAd(i));
   }
+
   return adArr;
 };
 
+/**
+ * Create an ad object
+ * @param {number} adIndex
+ * @return {Object}
+ */
 var generateAd = function (adIndex) {
   var title = getTitle(adIndex);
-  var locX = Math.floor(getRandomNumber(AdParams.LOCATIONS.MIN_X, AdParams.LOCATIONS.MAX_X));
-  var locY = Math.floor(getRandomNumber(AdParams.LOCATIONS.MIN_Y, AdParams.LOCATIONS.MAX_Y));
-  var price = Math.floor(getRandomNumber(AdParams.PRICES.MIN, AdParams.PRICES.MAX));
+  var locX = Math.floor(getRandomNumber(AdsParams.LOCATIONS.MIN_X, AdsParams.LOCATIONS.MAX_X));
+  var locY = Math.floor(getRandomNumber(AdsParams.LOCATIONS.MIN_Y, AdsParams.LOCATIONS.MAX_Y));
+  var price = Math.floor(getRandomNumber(AdsParams.PRICES.MIN, AdsParams.PRICES.MAX));
   var houseType = getHouseType(title);
-  var rooms = Math.floor(getRandomNumber(AdParams.ROOMS_RANGE.MIN, AdParams.ROOMS_RANGE.MAX));
-  var guests = Math.floor(getRandomNumber(1, AdParams.MAX_GUESTS));
+  var rooms = Math.floor(getRandomNumber(AdsParams.ROOMS_RANGE.MIN, AdsParams.ROOMS_RANGE.MAX));
+  var guests = Math.floor(getRandomNumber(1, AdsParams.MAX_GUESTS));
 
   return {
     author: {
@@ -78,11 +103,11 @@ var generateAd = function (adIndex) {
       type: houseType,
       rooms: rooms,
       guests: guests,
-      checkin: getCheckTime(AdParams.CHECK_ITEMS),
-      checkout: getCheckTime(AdParams.CHECK_ITEMS),
+      checkin: getCheckTime(AdsParams.CHECK_ITEMS),
+      checkout: getCheckTime(AdsParams.CHECK_ITEMS),
       features: getFeatures(),
       description: '',
-      photos: getPhotos()
+      photos: getPhotos(AdsParams.PHOTOS_ITEMS)
     },
 
     location: {
@@ -92,18 +117,33 @@ var generateAd = function (adIndex) {
   };
 };
 
+/**
+ * Take a index title and return needed title
+ * @param {number} index
+ * @return {string}
+ */
 var getTitle = function (index) {
-  return AdParams.TITLES[index];
+  return AdsParams.TITLES[index];
 };
 
+/**
+ * Take a avatar index
+ * @param {number} index
+ * @return {string}
+ */
 var getAvatar = function (index) {
   var pathAvatar = 'img/avatars/user';
   var typeAvatar = '.png';
-  pathAvatar = (index <= 8) ? pathAvatar + '0' : pathAvatar;
+  pathAvatar = (index <= 9) ? pathAvatar + '0' : pathAvatar;
   var result = pathAvatar + index + typeAvatar;
   return result;
 };
 
+/**
+ * Search a type of house by a specific word
+ * @param {string} title
+ * @return {string}
+ */
 var getHouseType = function (title) {
   var indexTitle = 0;
 
@@ -115,26 +155,40 @@ var getHouseType = function (title) {
     indexTitle = 2;
   }
 
-  return AdParams.TYPES[indexTitle];
+  return AdsParams.TYPES[indexTitle];
 };
 
+/**
+ * Return random time for advert
+ * @param {string} arrTime
+ * @return {string}
+ */
 var getCheckTime = function (arrTime) {
-  return arrTime[getRandomNumber(0, arrTime.length - 1).toFixed()];
+  return arrTime[getRandomNumber(MIN_RANGE, arrTime.length - 1).toFixed()];
 };
 
+/**
+ * Return random features items, but not unique
+ * @return {string[]}
+ */
 var getFeatures = function () {
   var newArr = [];
-  var randomNumber = Math.floor(getRandomNumber(0, AdParams.FEATURES_ITEMS.length));
+  var randomNumber = Math.floor(getRandomNumber(MIN_RANGE, AdsParams.FEATURES_ITEMS.length));
   var rand;
 
   for (var i = randomNumber; i >= 0; i--) {
-    rand = AdParams.FEATURES_ITEMS[Math.floor(Math.random() * AdParams.FEATURES_ITEMS.length)];
+    rand = AdsParams.FEATURES_ITEMS[Math.floor(Math.random() * AdsParams.FEATURES_ITEMS.length)];
     newArr[i] = rand;
   }
 
   return getUnique(newArr);
 };
 
+/**
+ * Return unique random array features items
+ * @param {string[]} arr
+ * @return {string[]}
+ */
 var getUnique = function (arr) {
   var obj = {};
 
@@ -146,17 +200,27 @@ var getUnique = function (arr) {
   return Object.keys(obj);
 };
 
-var getPhotos = function () {
-  return AdParams.PHOTOS_ITEMS.sort(compareRandom);
+/**
+ * Return array in random order
+ * @param {string[]} photos
+ * @return {string[]}
+ */
+var getPhotos = function (photos) {
+  return photos.sort(compareRandom);
 };
 
+/**
+ * Creating a random location for pin
+ * @param {Object} advert
+ * @return {HTMLButtonElement}
+ */
 var renderPin = function (advert) {
   var mapPin = document.createElement('button');
   var mapAvatar = document.createElement('img');
 
   mapPin.classList.add('map__pin');
-  mapPin.style.left = advert.location.x + 'px';
-  mapPin.style.top = advert.location.y + 'px';
+  mapPin.style.left = advert.location.x + PinImgParams.WIDTH / 2 + 'px';
+  mapPin.style.top = advert.location.y - PinImgParams.HEIGHT - PinImgParams.ARROW_HEIGHT + 'px';
 
   mapAvatar.src = advert.author.avatar;
   mapAvatar.width = PinImgParams.WIDTH;
@@ -168,6 +232,11 @@ var renderPin = function (advert) {
   return mapPin;
 };
 
+/**
+ * Return array of pins
+ * @param {string[]} advertsArray
+ * @return {Array}
+ */
 var createPins = function (advertsArray) {
   var pinsArray = [];
 
@@ -178,6 +247,11 @@ var createPins = function (advertsArray) {
   return pinsArray;
 };
 
+/**
+ * Take and fill our array of pins in document fragment
+ * @param {string[]} arrPin
+ * @return {DocumentFragment}
+ */
 var generateDocumentFragment = function (arrPin) {
   var fragment = document.createDocumentFragment();
 
@@ -188,6 +262,11 @@ var generateDocumentFragment = function (arrPin) {
   return fragment;
 };
 
+/**
+ * Fill pop-up
+ * @param {string} advert
+ * @return {Node}
+ */
 var createAdverts = function (advert) {
   var cardAdvert = mapCardTemplate.cloneNode(true);
 
@@ -216,6 +295,11 @@ var createAdverts = function (advert) {
   return cardAdvert;
 };
 
+/**
+ * Return type of house
+ * @param {string} advert
+ * @return {string}
+ */
 var getTranslate = function (advert) {
   if (advert === 'flat') {
     advert = 'Квартира';
@@ -228,10 +312,24 @@ var getTranslate = function (advert) {
   return advert;
 };
 
-var getRenderFeatures = function (cardFeatures, newFeatures) {
-  while (cardFeatures.hasChildNodes()) {
-    cardFeatures.removeChild(cardFeatures.lastChild);
+/**
+ * Get clean node
+ * @param {Node} node
+ */
+var getRemoveChildNode = function (node) {
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild);
   }
+};
+
+/**
+ * Render new lists features
+ * @param {Node} cardFeatures
+ * @param {string} newFeatures
+ * @return {Node}
+ */
+var getRenderFeatures = function (cardFeatures, newFeatures) {
+  getRemoveChildNode(cardFeatures);
 
   newFeatures.forEach(function (feature) {
     var li = document.createElement('li');
@@ -242,10 +340,14 @@ var getRenderFeatures = function (cardFeatures, newFeatures) {
   return cardFeatures;
 };
 
+/**
+ * Render new images
+ * @param {Node} cardPhotos
+ * @param {string} newPhotos
+ * @return {Node}
+ */
 var getRenderImages = function (cardPhotos, newPhotos) {
-  while (cardPhotos.hasChildNodes()) {
-    cardPhotos.removeChild(cardPhotos.lastChild);
-  }
+  getRemoveChildNode(cardPhotos);
 
   newPhotos.forEach(function (photos) {
     var li = document.createElement('li');
@@ -262,10 +364,20 @@ var getRenderImages = function (cardPhotos, newPhotos) {
   return cardPhotos;
 };
 
+/**
+ * Return random number between the interval min - max (max not inclusive)
+ * @param {number} min - number opacity
+ * @param {number} max - number opacity
+ * @return {number} - random number
+ */
 var getRandomNumber = function (min, max) {
   return Math.random() * (max - min) + min;
 };
 
+/**
+ * Return random value 50%/50%
+ * @return {number}
+ */
 var compareRandom = function () {
   return Math.random() - 0.5;
 };
@@ -274,7 +386,6 @@ var adverts = generateAdArray();
 var createPinsArray = createPins(adverts);
 var documentFragment = generateDocumentFragment(createPinsArray);
 var advertsFirst = createAdverts(adverts[0]);
-
 
 map.classList.remove('map--faded');
 mapPins.appendChild(documentFragment);
