@@ -183,14 +183,11 @@ var getFeatures = function (arr, length) {
   for (var i = 0; i < length; i++) {
     var randomIndex = Math.floor(Math.random() * copyArr.length);
     rand = copyArr[randomIndex];
-    console.log(randomIndex);
-    console.log(copyArr[randomIndex]);
     newArr[i] = rand;
     delete copyArr[randomIndex];
     copyArr = copyArr.filter(function (e) {
       return e;
     });
-    console.log(copyArr);
   }
 
   return newArr;
