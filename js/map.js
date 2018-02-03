@@ -8,7 +8,7 @@ var MIN_RANGE = 1;
 
 /**
  * Describing ads nearby
- * @type {Object}
+ * @type {object}
  */
 var AdsParams = {
   AD_COUNT: 8,
@@ -66,11 +66,12 @@ var mapFiltersContainter = document.querySelector('.map__filters-container');
 
 /**
  * Fill array of ads
+ * @param {number} length
  * @return {Array}
  */
-var generateAdArray = function () {
+var generateAdArray = function (length) {
   var adArr = [];
-  for (var i = 1; i < AdsParams.AD_COUNT; i++) {
+  for (var i = 1; i < length; i++) {
     adArr.push(generateAd(i));
   }
 
@@ -83,29 +84,23 @@ var generateAdArray = function () {
  * @return {Object}
  */
 var generateAd = function (adIndex) {
-  var title = getTitle(adIndex);
   var locX = Math.floor(getRandomNumber(AdsParams.LOCATIONS.MIN_X, AdsParams.LOCATIONS.MAX_X));
   var locY = Math.floor(getRandomNumber(AdsParams.LOCATIONS.MIN_Y, AdsParams.LOCATIONS.MAX_Y));
-  var price = Math.floor(getRandomNumber(AdsParams.PRICES.MIN, AdsParams.PRICES.MAX));
-  var houseType = getHouseType(title);
-  var rooms = Math.floor(getRandomNumber(AdsParams.ROOMS_RANGE.MIN, AdsParams.ROOMS_RANGE.MAX));
-  var guests = Math.floor(getRandomNumber(1, AdsParams.MAX_GUESTS));
-
   var objAds = {
     author: {
       avatar: getAvatar(adIndex)
     },
 
     offer: {
-      title: title,
+      title: AdsParams.TITLES[adIndex],
       address: locX + ', ' + locY,
-      price: price,
-      type: houseType,
-      rooms: rooms,
-      guests: guests,
-      checkin: getCheckTime(AdsParams.CHECK_ITEMS),
-      checkout: getCheckTime(AdsParams.CHECK_ITEMS),
-      features: getFeatures(AdsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, AdsParams.FEATURES_ITEMS.length))),
+      price: Math.floor(getRandomNumber(AdsParams.PRICES.MIN, AdsParams.PRICES.MAX)),
+      type: getHouseType(AdsParams.TITLES[adIndex]),
+      rooms: Math.floor(getRandomNumber(AdsParams.ROOMS_RANGE.MIN, AdsParams.ROOMS_RANGE.MAX)),
+      guests: Math.floor(getRandomNumber(MIN_RANGE, AdsParams.MAX_GUESTS)),
+      checkin: AdsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, AdsParams.CHECK_ITEMS.length - 1).toFixed()],
+      checkout: AdsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, AdsParams.CHECK_ITEMS.length - 1).toFixed()],
+      features: getProperties(AdsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, AdsParams.FEATURES_ITEMS.length))),
       description: '',
       photos: getPhotos(AdsParams.PHOTOS_ITEMS)
     },
@@ -120,25 +115,13 @@ var generateAd = function (adIndex) {
 };
 
 /**
- * Take a index title and return needed title
- * @param {number} index
- * @return {string}
- */
-var getTitle = function (index) {
-  return AdsParams.TITLES[index];
-};
-
-/**
  * Take a avatar index
  * @param {number} index
  * @return {string}
  */
 var getAvatar = function (index) {
-  var pathAvatar = 'img/avatars/user';
-  var typeAvatar = '.png';
-  pathAvatar = (index <= 9) ? pathAvatar + '0' : pathAvatar;
-  var result = pathAvatar + index + typeAvatar;
-  return result;
+  var pathAvatar = (index <= 9) ? 'img/avatars/user' + '0' : 'img/avatars/user';
+  return pathAvatar + index + '.png';
 };
 
 /**
@@ -161,21 +144,12 @@ var getHouseType = function (title) {
 };
 
 /**
- * Return random time for advert
- * @param {string} arrTime
- * @return {string}
- */
-var getCheckTime = function (arrTime) {
-  return arrTime[getRandomNumber(MIN_RANGE - 1, arrTime.length - 1).toFixed()];
-};
-
-/**
  * Return random features items
  * @param {string[]} arr
  * @param {number} length
  * @return {string[]}
  */
-var getFeatures = function (arr, length) {
+var getProperties = function (arr, length) {
   var copyArr = arr.slice();
   var newArr = [];
   var rand;
@@ -375,7 +349,7 @@ var compareRandom = function () {
   return Math.random() - 0.5;
 };
 
-var adverts = generateAdArray();
+var adverts = generateAdArray(AdsParams.AD_COUNT);
 var createPinsArray = createPins(adverts);
 var documentFragment = generateDocumentFragment(createPinsArray);
 var advertsFirst = createAdverts(adverts[0]);
