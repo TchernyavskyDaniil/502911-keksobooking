@@ -105,7 +105,7 @@ var generateAd = function (adIndex) {
       guests: guests,
       checkin: getCheckTime(AdsParams.CHECK_ITEMS),
       checkout: getCheckTime(AdsParams.CHECK_ITEMS),
-      features: getFeatures(AdsParams.FEATURES_ITEMS, AdsParams.FEATURES_ITEMS.length),
+      features: getFeatures(AdsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, AdsParams.FEATURES_ITEMS.length))),
       description: '',
       photos: getPhotos(AdsParams.PHOTOS_ITEMS)
     },
@@ -177,28 +177,13 @@ var getCheckTime = function (arrTime) {
  */
 var getFeatures = function (arr, length) {
   var newArr = [];
-  var randomNumber = Math.floor(getRandomNumber(MIN_RANGE, length));
+  var obj = {};
   var rand;
 
-  for (var i = randomNumber; i >= 0; i--) {
-    rand = arr[Math.floor(Math.random() * length)];
+  for (var i = 0; i < length; i++) {
+    rand = arr[Math.floor(Math.random() * arr.length)];
     newArr[i] = rand;
-  }
-
-  return getUnique(newArr);
-};
-
-/**
- * Return unique random array features items
- * @param {string[]} arr
- * @return {string[]}
- */
-var getUnique = function (arr) {
-  var obj = {};
-
-  for (var i = 0; i < arr.length; i++) {
-    var str = arr[i];
-    obj[str] = true;
+    obj[rand] = true;
   }
 
   return Object.keys(obj);
