@@ -185,6 +185,7 @@ var getFeatures = function (arr, length) {
     rand = copyArr[randomIndex];
     newArr[i] = rand;
     delete copyArr[randomIndex];
+    
     copyArr = copyArr.filter(function (e) {
       return e;
     });
