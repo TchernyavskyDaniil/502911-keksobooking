@@ -78,7 +78,7 @@ var generateAdArray = function () {
 };
 
 /**
- * Create an ad object
+ * Create ad object
  * @param {number} adIndex
  * @return {Object}
  */
@@ -91,7 +91,7 @@ var generateAd = function (adIndex) {
   var rooms = Math.floor(getRandomNumber(AdsParams.ROOMS_RANGE.MIN, AdsParams.ROOMS_RANGE.MAX));
   var guests = Math.floor(getRandomNumber(1, AdsParams.MAX_GUESTS));
 
-  return {
+  var objAds = {
     author: {
       avatar: getAvatar(adIndex)
     },
@@ -105,7 +105,7 @@ var generateAd = function (adIndex) {
       guests: guests,
       checkin: getCheckTime(AdsParams.CHECK_ITEMS),
       checkout: getCheckTime(AdsParams.CHECK_ITEMS),
-      features: getFeatures(),
+      features: getFeatures(AdsParams.FEATURES_ITEMS, AdsParams.FEATURES_ITEMS.length),
       description: '',
       photos: getPhotos(AdsParams.PHOTOS_ITEMS)
     },
@@ -115,6 +115,8 @@ var generateAd = function (adIndex) {
       y: locY
     }
   };
+
+  return objAds;
 };
 
 /**
@@ -169,15 +171,17 @@ var getCheckTime = function (arrTime) {
 
 /**
  * Return random features items, but not unique
+ * @param {string[]} arr
+ * @param {number} length
  * @return {string[]}
  */
-var getFeatures = function () {
+var getFeatures = function (arr, length) {
   var newArr = [];
-  var randomNumber = Math.floor(getRandomNumber(MIN_RANGE, AdsParams.FEATURES_ITEMS.length));
+  var randomNumber = Math.floor(getRandomNumber(MIN_RANGE, length));
   var rand;
 
   for (var i = randomNumber; i >= 0; i--) {
-    rand = AdsParams.FEATURES_ITEMS[Math.floor(Math.random() * AdsParams.FEATURES_ITEMS.length)];
+    rand = arr[Math.floor(Math.random() * length)];
     newArr[i] = rand;
   }
 
