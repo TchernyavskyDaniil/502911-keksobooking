@@ -166,7 +166,7 @@ var getHouseType = function (title) {
  * @return {string}
  */
 var getCheckTime = function (arrTime) {
-  return arrTime[getRandomNumber(MIN_RANGE, arrTime.length - 1).toFixed()];
+  return arrTime[getRandomNumber(MIN_RANGE - 1, arrTime.length - 1).toFixed()];
 };
 
 /**
@@ -179,15 +179,18 @@ var getFeatures = function (arr, length) {
   var copyArr = arr.slice();
   var newArr = [];
   var rand;
-  var randomIndex = Math.floor(Math.random() * copyArr.length);
 
   for (var i = 0; i < length; i++) {
+    var randomIndex = Math.floor(Math.random() * copyArr.length);
     rand = copyArr[randomIndex];
+    console.log(randomIndex);
+    console.log(copyArr[randomIndex]);
     newArr[i] = rand;
     delete copyArr[randomIndex];
     copyArr = copyArr.filter(function (e) {
       return e;
     });
+    console.log(copyArr);
   }
 
   return newArr;
@@ -358,13 +361,13 @@ var getRenderImages = function (cardPhotos, newPhotos) {
 };
 
 /**
- * Return random number between the interval min - max (max not inclusive)
+ * Return random number between the interval min (inclusive) - max (inclusive)
  * @param {number} min - number opacity
  * @param {number} max - number opacity
  * @return {number} - random number
  */
 var getRandomNumber = function (min, max) {
-  return Math.random() * (max - min) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 /**
