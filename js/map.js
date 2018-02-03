@@ -4,7 +4,7 @@
  * Minimum value
  * @const {number} MIN_RANGE
  */
-var MIN_RANGE = 0;
+var MIN_RANGE = 1;
 
 /**
  * Describing ads nearby
@@ -170,23 +170,27 @@ var getCheckTime = function (arrTime) {
 };
 
 /**
- * Return random features items, but not unique
+ * Return random features items
  * @param {string[]} arr
  * @param {number} length
  * @return {string[]}
  */
 var getFeatures = function (arr, length) {
+  var copyArr = arr.slice();
   var newArr = [];
-  var obj = {};
   var rand;
+  var randomIndex = Math.floor(Math.random() * copyArr.length);
 
   for (var i = 0; i < length; i++) {
-    rand = arr[Math.floor(Math.random() * arr.length)];
+    rand = copyArr[randomIndex];
     newArr[i] = rand;
-    obj[rand] = true;
+    delete copyArr[randomIndex];
+    copyArr = copyArr.filter(function (e) {
+      return e;
+    });
   }
 
-  return Object.keys(obj);
+  return newArr;
 };
 
 /**
