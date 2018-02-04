@@ -296,18 +296,26 @@ var getRenderImages = function (cardPhoto, newPhotos) {
   getRemoveChildNode(cardPhoto);
 
   newPhotos.forEach(function (photos) {
-    var li = document.createElement('li');
-    var img = document.createElement('img');
-
-    img.src = photos;
-    img.width = PinImgParams.WIDTH;
-    img.height = PinImgParams.HEIGHT;
-
-    cardPhoto.appendChild(li);
-    li.appendChild(img);
+    createPicture(cardPhoto, photos);
   });
 };
 
+/**
+ * Render picture
+ * @param {Node} cardPhoto
+ * @param {string} photos
+ */
+var createPicture = function (cardPhoto, photos) {
+  var li = document.createElement('li');
+  var img = document.createElement('img');
+
+  img.src = photos;
+  img.width = PinImgParams.WIDTH;
+  img.height = PinImgParams.HEIGHT;
+
+  cardPhoto.appendChild(li);
+  li.appendChild(img);
+};
 /**
  * Return random number between the interval min (inclusive) - max (inclusive)
  * @param {number} min - number opacity
