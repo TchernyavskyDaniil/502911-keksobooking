@@ -92,7 +92,7 @@ var mapFiltersContainter = document.querySelector('.map__filters-container');
  */
 var generateAdArray = function (length) {
   var adArr = [];
-  for (var i = 1; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     adArr.push(generateAd(i));
   }
 
@@ -142,6 +142,7 @@ var generateAd = function (adIndex) {
  */
 var getAvatar = function (index) {
   var pathAvatar = (index <= 9) ? 'img/avatars/user0' : 'img/avatars/user';
+  index++;
   return pathAvatar + index + '.png';
 };
 
@@ -316,6 +317,7 @@ var createPicture = function (cardPhoto, photos) {
   cardPhoto.appendChild(li);
   li.appendChild(img);
 };
+
 /**
  * Return random number between the interval min (inclusive) - max (inclusive)
  * @param {number} min - number opacity
