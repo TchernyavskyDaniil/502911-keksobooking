@@ -59,6 +59,10 @@ var PropertyType = {
   bungalo: 'Бунгало'
 };
 
+/**
+ * Dictionary for find type of house
+ * @enum {string}
+ */
 var HouseType = {
   'квартира': 0,
   'дворец': 1,
