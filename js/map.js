@@ -102,7 +102,7 @@ var generateAd = function (adIndex) {
       checkout: AdsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, AdsParams.CHECK_ITEMS.length - 1).toFixed()],
       features: getProperties(AdsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, AdsParams.FEATURES_ITEMS.length))),
       description: '',
-      photos: getPhotos(AdsParams.PHOTOS_ITEMS)
+      photos: AdsParams.PHOTOS_ITEMS.sort(compareRandom)
     },
 
     location: {
@@ -120,7 +120,7 @@ var generateAd = function (adIndex) {
  * @return {string}
  */
 var getAvatar = function (index) {
-  var pathAvatar = (index <= 9) ? 'img/avatars/user' + '0' : 'img/avatars/user';
+  var pathAvatar = (index <= 9) ? 'img/avatars/user0' : 'img/avatars/user';
   return pathAvatar + index + '.png';
 };
 
@@ -168,18 +168,9 @@ var getProperties = function (arr, length) {
 };
 
 /**
- * Return array in random order
- * @param {string[]} photos
- * @return {string[]}
- */
-var getPhotos = function (photos) {
-  return photos.sort(compareRandom);
-};
-
-/**
  * Creating a random location for pin
  * @param {Object} advert
- * @return {HTMLButtonElement}
+ * @return {Node}
  */
 var renderPin = function (advert) {
   var mapPin = document.createElement('button');
@@ -234,30 +225,30 @@ var generateDocumentFragment = function (arrPin) {
  * @param {string} advert
  * @return {Node}
  */
-var createAdverts = function (advert) {
+var createAdvert = function (advert) {
   var cardAdvert = mapCardTemplate.cloneNode(true);
 
   var cardTitle = cardAdvert.querySelector('h3');
   var cardAddress = cardAdvert.querySelector('small');
   var cardPrice = cardAdvert.querySelector('.popup__price');
   var cardHouse = cardAdvert.querySelector('h4');
-  var cardRooms = cardAdvert.querySelector('.popup__room');
+  var cardRoom = cardAdvert.querySelector('.popup__room');
   var cardCheck = cardAdvert.querySelector('.popup__check');
-  var cardFeatures = cardAdvert.querySelector('.popup__features');
+  var cardFeature = cardAdvert.querySelector('.popup__features');
   var cardDescription = cardAdvert.querySelector('.popup__description');
   var cardAvatar = cardAdvert.querySelector('.popup__avatar');
-  var cardPhotos = cardAdvert.querySelector('.popup__pictures');
+  var cardPhoto = cardAdvert.querySelector('.popup__pictures');
 
   cardTitle.textContent = advert.offer.title;
   cardAddress.textContent = advert.offer.address;
   cardPrice.textContent = advert.offer.price + '\t\u20BD/ночь';
   cardHouse.textContent = getTranslate(advert.offer.type);
-  cardRooms.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
+  cardRoom.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   cardCheck.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-  getRenderFeatures(cardFeatures, advert.offer.features);
+  getRenderFeatures(cardFeature, advert.offer.features);
   cardDescription.textContent = advert.offer.description;
   cardAvatar.src = advert.author.avatar;
-  getRenderImages(cardPhotos, advert.offer.photos);
+  getRenderImages(cardPhoto, advert.offer.photos);
 
   return cardAdvert;
 };
@@ -291,30 +282,30 @@ var getRemoveChildNode = function (node) {
 
 /**
  * Render new lists features
- * @param {Node} cardFeatures
+ * @param {Node} cardFeature
  * @param {string} newFeatures
  * @return {Node}
  */
-var getRenderFeatures = function (cardFeatures, newFeatures) {
-  getRemoveChildNode(cardFeatures);
+var getRenderFeatures = function (cardFeature, newFeatures) {
+  getRemoveChildNode(cardFeature);
 
   newFeatures.forEach(function (feature) {
     var li = document.createElement('li');
     li.className = 'feature feature--' + feature;
-    cardFeatures.appendChild(li);
+    cardFeature.appendChild(li);
   });
 
-  return cardFeatures;
+  return cardFeature;
 };
 
 /**
  * Render new images
- * @param {Node} cardPhotos
+ * @param {Node} cardPhoto
  * @param {string} newPhotos
  * @return {Node}
  */
-var getRenderImages = function (cardPhotos, newPhotos) {
-  getRemoveChildNode(cardPhotos);
+var getRenderImages = function (cardPhoto, newPhotos) {
+  getRemoveChildNode(cardPhoto);
 
   newPhotos.forEach(function (photos) {
     var li = document.createElement('li');
@@ -324,11 +315,11 @@ var getRenderImages = function (cardPhotos, newPhotos) {
     img.width = PinImgParams.WIDTH;
     img.height = PinImgParams.HEIGHT;
 
-    cardPhotos.appendChild(li);
+    cardPhoto.appendChild(li);
     li.appendChild(img);
   });
 
-  return cardPhotos;
+  return cardPhoto;
 };
 
 /**
@@ -349,11 +340,6 @@ var compareRandom = function () {
   return Math.random() - 0.5;
 };
 
-var adverts = generateAdArray(AdsParams.AD_COUNT);
-var createPinsArray = createPins(adverts);
-var documentFragment = generateDocumentFragment(createPinsArray);
-var advertsFirst = createAdverts(adverts[0]);
-
 map.classList.remove('map--faded');
-mapPins.appendChild(documentFragment);
-map.insertBefore(advertsFirst, mapFiltersContainter);
+mapPins.appendChild(generateDocumentFragment(createPins(generateAdArray(AdsParams.AD_COUNT))));
+map.insertBefore(createAdvert(generateAdArray(AdsParams.AD_COUNT)[0]), mapFiltersContainter);
