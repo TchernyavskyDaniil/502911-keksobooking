@@ -50,6 +50,23 @@ var AdsParams = {
 };
 
 /**
+ * Translate property type in Russian
+ * @enum {string}
+ */
+var PropertyType = {
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
+var HouseType = {
+  'квартира': 0,
+  'дворец': 1,
+  'домик': 2,
+  'бунгало': 2
+};
+
+/**
  * Describing pin params
  * @enum {number} PinImgParams
  */
@@ -132,22 +149,20 @@ var getAvatar = function (index) {
 var getHouseType = function (title) {
   var indexTitle = 0;
 
-  if (/квартира/.test(title.toLowerCase())) {
-    indexTitle = 0;
-  } else if (/дворец/.test(title.toLowerCase())) {
-    indexTitle = 1;
-  } else {
-    indexTitle = 2;
-  }
+  Object.keys(HouseType).forEach(function (key) {
+    if (RegExp(key).test(title.toLowerCase())) {
+      indexTitle = HouseType[key];
+    }
+  });
 
   return AdsParams.TYPES[indexTitle];
 };
 
 /**
  * Return random features items
- * @param {string[]} arr
+ * @param {Array} arr
  * @param {number} length
- * @return {string[]}
+ * @return {Array}
  */
 var getProperties = function (arr, length) {
   var copyArr = arr.slice();
@@ -173,47 +188,37 @@ var getProperties = function (arr, length) {
  * @return {Node}
  */
 var renderPin = function (advert) {
-  var mapPin = document.createElement('button');
-  var mapAvatar = document.createElement('img');
+  var mapBtn = document.createElement('button');
+  var mapImg = document.createElement('img');
 
-  mapPin.classList.add('map__pin');
-  mapPin.style.left = advert.location.x + PinImgParams.WIDTH / 2 + 'px';
-  mapPin.style.top = advert.location.y - PinImgParams.HEIGHT - PinImgParams.ARROW_HEIGHT + 'px';
+  mapBtn.classList.add('map__pin');
+  mapBtn.style.left = advert.location.x + PinImgParams.WIDTH / 2 + 'px';
+  mapBtn.style.top = advert.location.y - PinImgParams.HEIGHT - PinImgParams.ARROW_HEIGHT + 'px';
 
-  mapAvatar.src = advert.author.avatar;
-  mapAvatar.width = PinImgParams.WIDTH;
-  mapAvatar.height = PinImgParams.HEIGHT;
-  mapAvatar.draggable = false;
+  mapImg.src = advert.author.avatar;
+  mapImg.width = PinImgParams.WIDTH;
+  mapImg.height = PinImgParams.HEIGHT;
+  mapImg.draggable = false;
 
-  mapPin.appendChild(mapAvatar);
+  mapBtn.appendChild(mapImg);
 
-  return mapPin;
+  return mapBtn;
 };
 
 /**
- * Return array of pins
- * @param {string[]} advertsArray
+ * Return array of fragment pins
+ * @param {Array} advertsArray
  * @return {Array}
  */
 var createPins = function (advertsArray) {
   var pinsArray = [];
+  var fragment = document.createDocumentFragment();
 
   advertsArray.forEach(function (item) {
     pinsArray.push(renderPin(item));
   });
 
-  return pinsArray;
-};
-
-/**
- * Take and fill our array of pins in document fragment
- * @param {string[]} arrPin
- * @return {DocumentFragment}
- */
-var generateDocumentFragment = function (arrPin) {
-  var fragment = document.createDocumentFragment();
-
-  arrPin.forEach(function (pin) {
+  pinsArray.forEach(function (pin) {
     fragment.appendChild(pin);
   });
 
@@ -242,7 +247,7 @@ var createAdvert = function (advert) {
   cardTitle.textContent = advert.offer.title;
   cardAddress.textContent = advert.offer.address;
   cardPrice.textContent = advert.offer.price + '\t\u20BD/ночь';
-  cardHouse.textContent = getTranslate(advert.offer.type);
+  cardHouse.textContent = PropertyType[advert.offer.type];
   cardRoom.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   cardCheck.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
   getRenderFeatures(cardFeature, advert.offer.features);
@@ -251,23 +256,6 @@ var createAdvert = function (advert) {
   getRenderImages(cardPhoto, advert.offer.photos);
 
   return cardAdvert;
-};
-
-/**
- * Return type of house
- * @param {string} advert
- * @return {string}
- */
-var getTranslate = function (advert) {
-  if (advert === 'flat') {
-    advert = 'Квартира';
-  } else if (advert === 'house') {
-    advert = 'Бунгало';
-  } else {
-    advert = 'Дом';
-  }
-
-  return advert;
 };
 
 /**
@@ -284,7 +272,6 @@ var getRemoveChildNode = function (node) {
  * Render new lists features
  * @param {Node} cardFeature
  * @param {string} newFeatures
- * @return {Node}
  */
 var getRenderFeatures = function (cardFeature, newFeatures) {
   getRemoveChildNode(cardFeature);
@@ -294,15 +281,12 @@ var getRenderFeatures = function (cardFeature, newFeatures) {
     li.className = 'feature feature--' + feature;
     cardFeature.appendChild(li);
   });
-
-  return cardFeature;
 };
 
 /**
  * Render new images
  * @param {Node} cardPhoto
  * @param {string} newPhotos
- * @return {Node}
  */
 var getRenderImages = function (cardPhoto, newPhotos) {
   getRemoveChildNode(cardPhoto);
@@ -318,8 +302,6 @@ var getRenderImages = function (cardPhoto, newPhotos) {
     cardPhoto.appendChild(li);
     li.appendChild(img);
   });
-
-  return cardPhoto;
 };
 
 /**
@@ -341,5 +323,5 @@ var compareRandom = function () {
 };
 
 map.classList.remove('map--faded');
-mapPins.appendChild(generateDocumentFragment(createPins(generateAdArray(AdsParams.AD_COUNT))));
+mapPins.appendChild(createPins(generateAdArray(AdsParams.AD_COUNT)));
 map.insertBefore(createAdvert(generateAdArray(AdsParams.AD_COUNT)[0]), mapFiltersContainter);
