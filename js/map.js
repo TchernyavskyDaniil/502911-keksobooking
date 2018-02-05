@@ -121,7 +121,7 @@
         title: adsParams.TITLES[adIndex],
         address: locX + ', ' + locY,
         price: Math.floor(getRandomNumber(adsParams.PRICES.MIN, adsParams.PRICES.MAX)),
-        type: gethouseType(adsParams.TITLES[adIndex]),
+        type: getHouseType(adsParams.TITLES[adIndex]),
         rooms: Math.floor(getRandomNumber(adsParams.ROOMS_RANGE.MIN, adsParams.ROOMS_RANGE.MAX)),
         guests: Math.floor(getRandomNumber(MIN_RANGE, adsParams.MAX_GUESTS)),
         checkin: adsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, adsParams.CHECK_ITEMS.length - 1).toFixed()],
@@ -155,7 +155,7 @@
    * @param {string} title
    * @return {string}
    */
-  var gethouseType = function (title) {
+  var getHouseType = function (title) {
     var indexTitle = 0;
 
     Object.keys(houseType).forEach(function (key) {
