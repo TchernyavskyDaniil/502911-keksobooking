@@ -2,7 +2,7 @@
 
 (function () {
   /**
-   * Minimum value for determining the random number
+   * Set any minimum value in interval for calculating random number
    * @const {number} MIN_RANGE
    */
   var MIN_RANGE = 1;
@@ -22,7 +22,7 @@
       'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик',
       'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'],
 
-    PRICES: {
+    PRICE_RANGE: {
       MIN: 1000,
       MAX: 1000000
     },
@@ -46,7 +46,7 @@
       'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
     ],
 
-    LOCATIONS: {
+    LOCATION_RANGE: {
       MIN_X: 300,
       MAX_X: 900,
       MIN_Y: 150,
@@ -110,8 +110,8 @@
    * @return {Object}
    */
   var generateAd = function (adIndex) {
-    var locX = Math.floor(getRandomNumber(adsParams.LOCATIONS.MIN_X, adsParams.LOCATIONS.MAX_X));
-    var locY = Math.floor(getRandomNumber(adsParams.LOCATIONS.MIN_Y, adsParams.LOCATIONS.MAX_Y));
+    var locX = Math.floor(getRandomNumber(adsParams.LOCATION_RANGE.MIN_X, adsParams.LOCATION_RANGE.MAX_X));
+    var locY = Math.floor(getRandomNumber(adsParams.LOCATION_RANGE.MIN_Y, adsParams.LOCATION_RANGE.MAX_Y));
     var objAds = {
       author: {
         avatar: getAvatar(adIndex + 1)
@@ -120,13 +120,13 @@
       offer: {
         title: adsParams.TITLES[adIndex],
         address: locX + ', ' + locY,
-        price: Math.floor(getRandomNumber(adsParams.PRICES.MIN, adsParams.PRICES.MAX)),
+        price: Math.floor(getRandomNumber(adsParams.PRICE_RANGE.MIN, adsParams.PRICE_RANGE.MAX)),
         type: getHouseType(adsParams.TITLES[adIndex]),
         rooms: Math.floor(getRandomNumber(adsParams.ROOMS_RANGE.MIN, adsParams.ROOMS_RANGE.MAX)),
         guests: Math.floor(getRandomNumber(MIN_RANGE, adsParams.MAX_GUESTS)),
         checkin: adsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, adsParams.CHECK_ITEMS.length - 1).toFixed()],
         checkout: adsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, adsParams.CHECK_ITEMS.length - 1).toFixed()],
-        features: getProperties(adsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, adsParams.FEATURES_ITEMS.length))),
+        features: getRandomArray(adsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, adsParams.FEATURES_ITEMS.length))),
         description: '',
         photos: getShuffleArray(adsParams.PHOTOS_ITEMS)
       },
@@ -168,25 +168,25 @@
   };
 
   /**
-   * Return random features items
+   * Get new array with unique elements from old.
+   * Elements order in new array is random.
    * @param {Array} arr
    * @param {number} length
    * @return {Array}
    */
-  var getProperties = function (arr, length) {
+  var getRandomArray = function (arr, length) {
     var newArr = [];
     var rand;
-    var i = 0;
 
-    while (i < length) {
+    while (length > 0) {
       var randomIndex = Math.floor(Math.random() * arr.length);
       rand = arr[randomIndex];
-      if (newArr.indexOf(rand) !== -1) {
+      if (~newArr.indexOf(rand)) {
         continue;
       } else {
         newArr.push(rand);
       }
-      i++;
+      length--;
     }
 
     return newArr;
@@ -198,16 +198,25 @@
    * @return {Array}
    */
   var getShuffleArray = function (array) {
+    // Начнем с конца добавление
     var currentIndex = array.length;
+    // Переходное значение для переноса
     var temporaryValue;
+    // Рандом индекс для замены
     var randomIndex;
 
+    // Пока длина не 0 работаем
     while (currentIndex !== 0) {
+      // Рандом индекс
       randomIndex = Math.floor(Math.random() * currentIndex);
+      // Уменьшаем текущую длину, тк счет индексов с 0, а длина нет
       currentIndex -= 1;
 
+      // Заносим значение для дальнейшей замены.
       temporaryValue = array[currentIndex];
+      // В текущий эл с конца помещаем рандомный эл
       array[currentIndex] = array[randomIndex];
+      // После того как поместили, нам нужно заменить же оба местами, вот:
       array[randomIndex] = temporaryValue;
     }
 
@@ -242,15 +251,10 @@
    * @return {Array}
    */
   var createPins = function (advertsArray) {
-    var pinsArray = [];
     var fragment = document.createDocumentFragment();
 
     advertsArray.forEach(function (item) {
-      pinsArray.push(renderPin(item));
-    });
-
-    pinsArray.forEach(function (pin) {
-      fragment.appendChild(pin);
+      fragment.appendChild(renderPin(item));
     });
 
     return fragment;
