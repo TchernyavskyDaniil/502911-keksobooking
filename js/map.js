@@ -80,6 +80,8 @@
     ARROW_HEIGHT: 20
   };
 
+  var pinOffsetY = PinImgParams.HEIGHT / 2 + PinImgParams.ARROW_HEIGHT;
+
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
@@ -216,8 +218,8 @@
     var img = document.createElement('img');
 
     pin.classList.add('map__pin');
-    pin.style.left = advert.location.x + PinImgParams.WIDTH / 2 + 'px';
-    pin.style.top = advert.location.y - PinImgParams.HEIGHT - PinImgParams.ARROW_HEIGHT + 'px';
+    pin.style.left = advert.location.x + 'px';
+    pin.style.top = advert.location.y - PinImgParams.HEIGHT + 'px';
 
     img.src = advert.author.avatar;
     img.width = PinImgParams.WIDTH;
@@ -271,7 +273,10 @@
     cardCheck.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
     cardDescription.textContent = advert.offer.description;
     cardAvatar.src = advert.author.avatar;
-    getRenderImages(cardPhoto, advert.offer.photos);
+
+    advert.offer.photos.forEach(function (photos) {
+      cardPhoto.appendChild(createPicture(photos));
+    });
 
     advert.offer.features.forEach(function (feature) {
       cardFeature.appendChild(getRenderElement(feature));
@@ -292,22 +297,10 @@
   };
 
   /**
-   * Render new images
-   * @param {Node} cardPhoto
-   * @param {string} newPhotos
-   */
-  var getRenderImages = function (cardPhoto, newPhotos) {
-    newPhotos.forEach(function (photos) {
-      createPicture(cardPhoto, photos);
-    });
-  };
-
-  /**
    * Render picture
-   * @param {Node} cardPhoto
    * @param {string} photos
    */
-  var createPicture = function (cardPhoto, photos) {
+  var createPicture = function (photos) {
     var li = document.createElement('li');
     var img = document.createElement('img');
 
@@ -315,8 +308,8 @@
     img.width = PinImgParams.WIDTH;
     img.height = PinImgParams.HEIGHT;
 
-    cardPhoto.appendChild(li);
     li.appendChild(img);
+    return li;
   };
 
   /**
@@ -326,10 +319,13 @@
    * @return {number} - random number
    */
   var getRandomNumber = function (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
   };
 
+  var adverts = generateAdArray(AD_COUNT);
+  var firstCard = createAdvert(adverts[0]);
+
   map.classList.remove('map--faded');
-  mapPins.appendChild(createPins(generateAdArray(AD_COUNT)));
-  map.insertBefore(createAdvert(generateAdArray(AD_COUNT)[0]), mapFiltersContainter);
+  mapPins.appendChild(createPins(adverts));
+  map.insertBefore(firstCard, mapFiltersContainter);
 })();
