@@ -1,11 +1,6 @@
 'use strict';
 
 (function () {
-  /**
-   * Set any minimum value in interval for calculating random number
-   * @const {number} MIN_RANGE
-   */
-  var MIN_RANGE = 1;
 
   /**
    * How much adverts we have
@@ -123,10 +118,10 @@
         price: Math.floor(getRandomNumber(adsParams.PRICE_RANGE.MIN, adsParams.PRICE_RANGE.MAX)),
         type: getHouseType(adsParams.TITLES[adIndex]),
         rooms: Math.floor(getRandomNumber(adsParams.ROOMS_RANGE.MIN, adsParams.ROOMS_RANGE.MAX)),
-        guests: Math.floor(getRandomNumber(MIN_RANGE, adsParams.MAX_GUESTS)),
-        checkin: adsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, adsParams.CHECK_ITEMS.length - 1).toFixed()],
-        checkout: adsParams.CHECK_ITEMS[getRandomNumber(MIN_RANGE - 1, adsParams.CHECK_ITEMS.length - 1).toFixed()],
-        features: getRandomArray(adsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(MIN_RANGE, adsParams.FEATURES_ITEMS.length))),
+        guests: Math.floor(getRandomNumber(1, adsParams.MAX_GUESTS)),
+        checkin: adsParams.CHECK_ITEMS[getRandomNumber(0, adsParams.CHECK_ITEMS.length - 1).toFixed()],
+        checkout: adsParams.CHECK_ITEMS[getRandomNumber(0, adsParams.CHECK_ITEMS.length - 1).toFixed()],
+        features: getRandomArray(adsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(1, adsParams.FEATURES_ITEMS.length))),
         description: '',
         photos: getShuffleArray(adsParams.PHOTOS_ITEMS)
       },
@@ -177,8 +172,7 @@
   var getRandomArray = function (arr, length) {
     var newArr = [];
     var rand;
-
-    while (length !== newArr.length) {
+    while (length > newArr.length) {
       var randomIndex = Math.floor(Math.random() * arr.length);
       rand = arr[randomIndex];
       if (~newArr.indexOf(rand)) {
@@ -187,7 +181,7 @@
         newArr.push(rand);
       }
     }
-    
+
     return newArr;
   };
 
@@ -201,7 +195,7 @@
     var temporaryValue;
     var randomIndex;
 
-    while (currentIndex !== 0) {
+    while (currentIndex) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
 
