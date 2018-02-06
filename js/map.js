@@ -178,7 +178,7 @@
     var newArr = [];
     var rand;
 
-    while (length > 0) {
+    while (length !== newArr.length) {
       var randomIndex = Math.floor(Math.random() * arr.length);
       rand = arr[randomIndex];
       if (~newArr.indexOf(rand)) {
@@ -186,9 +186,8 @@
       } else {
         newArr.push(rand);
       }
-      length--;
     }
-
+    
     return newArr;
   };
 
