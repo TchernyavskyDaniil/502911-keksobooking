@@ -79,7 +79,7 @@
     HEIGHT: 40,
     ARROW_HEIGHT: 20
   };
-  
+
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
@@ -217,7 +217,7 @@
 
     pin.classList.add('map__pin');
     pin.style.left = advert.location.x + 'px';
-    pin.style.top = advert.location.y - PinImgParams.HEIGHT + 'px';
+    pin.style.top = advert.location.y - (PinImgParams.ARROW_HEIGHT + PinImgParams.HEIGHT) * 0.5 + 'px';
 
     img.src = advert.author.avatar;
     img.width = PinImgParams.WIDTH;
@@ -272,8 +272,8 @@
     cardDescription.textContent = advert.offer.description;
     cardAvatar.src = advert.author.avatar;
 
-    advert.offer.photos.forEach(function (photos) {
-      cardPhoto.appendChild(createPicture(photos));
+    advert.offer.photos.forEach(function (photo) {
+      cardPhoto.appendChild(createPicture(photo));
     });
 
     advert.offer.features.forEach(function (feature) {
@@ -296,18 +296,19 @@
 
   /**
    * Render picture
-   * @param {string} photos
+   * @param {string} photoUrl
    * @return {Node}
    */
-  var createPicture = function (photos) {
+  var createPicture = function (photoUrl) {
     var li = document.createElement('li');
     var img = document.createElement('img');
 
-    img.src = photos;
+    img.src = photoUrl;
     img.width = PinImgParams.WIDTH;
     img.height = PinImgParams.HEIGHT;
 
     li.appendChild(img);
+
     return li;
   };
 

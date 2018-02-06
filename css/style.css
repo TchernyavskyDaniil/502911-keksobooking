@@ -854,3 +854,13 @@ textarea:focus
 {
     background-position: -10px -10px;
 }
+
+.map__pins:before {
+  content: ' ';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background-color: black;
+  top:1px;
+  left:1px;
+}
