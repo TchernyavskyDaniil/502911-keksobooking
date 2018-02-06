@@ -299,6 +299,7 @@
   /**
    * Render picture
    * @param {string} photos
+   * @return {Node}
    */
   var createPicture = function (photos) {
     var li = document.createElement('li');
