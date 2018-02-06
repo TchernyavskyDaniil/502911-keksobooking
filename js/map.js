@@ -79,9 +79,7 @@
     HEIGHT: 40,
     ARROW_HEIGHT: 20
   };
-
-  var pinOffsetY = PinImgParams.HEIGHT / 2 + PinImgParams.ARROW_HEIGHT;
-
+  
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
