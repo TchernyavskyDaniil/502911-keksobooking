@@ -198,25 +198,16 @@
    * @return {Array}
    */
   var getShuffleArray = function (array) {
-    // Начнем с конца добавление
     var currentIndex = array.length;
-    // Переходное значение для переноса
     var temporaryValue;
-    // Рандом индекс для замены
     var randomIndex;
 
-    // Пока длина не 0 работаем
     while (currentIndex !== 0) {
-      // Рандом индекс
       randomIndex = Math.floor(Math.random() * currentIndex);
-      // Уменьшаем текущую длину, тк счет индексов с 0, а длина нет
       currentIndex -= 1;
 
-      // Заносим значение для дальнейшей замены.
       temporaryValue = array[currentIndex];
-      // В текущий эл с конца помещаем рандомный эл
       array[currentIndex] = array[randomIndex];
-      // После того как поместили, нам нужно заменить же оба местами, вот:
       array[randomIndex] = temporaryValue;
     }
 
@@ -285,25 +276,26 @@
     cardHouse.textContent = propertyType[advert.offer.type];
     cardRoom.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
     cardCheck.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-    getRenderFeatures(cardFeature, advert.offer.features);
     cardDescription.textContent = advert.offer.description;
     cardAvatar.src = advert.author.avatar;
     getRenderImages(cardPhoto, advert.offer.photos);
+
+    advert.offer.features.forEach(function (feature) {
+      cardFeature.appendChild(getRenderElement(feature));
+    });
 
     return cardAdvert;
   };
 
   /**
-   * Render new lists features
-   * @param {Node} cardFeature
-   * @param {string} newFeatures
+   * Get new li with class
+   * @param {string} className
+   * @return {Node}
    */
-  var getRenderFeatures = function (cardFeature, newFeatures) {
-    newFeatures.forEach(function (feature) {
-      var li = document.createElement('li');
-      li.className = 'feature feature--' + feature;
-      cardFeature.appendChild(li);
-    });
+  var getRenderElement = function (className) {
+    var li = document.createElement('li');
+    li.className = 'feature feature--' + className;
+    return li;
   };
 
   /**
