@@ -9,6 +9,14 @@
   var AD_COUNT = 8;
 
   /**
+   * @enum {number} KeyCodes
+   */
+  var KeyCodes = {
+    ENTER: 13,
+    ESC: 27
+  };
+
+  /**
    * Nearby ads params
    * @type {Object}
    */
@@ -80,10 +88,20 @@
     ARROW_HEIGHT: 20
   };
 
+  var PinButtonParams = {
+    WIDTH: 40,
+    HEIGHT: 44,
+    ARROW_HEIGHT: 22
+  };
+
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
+  var mapPinButton = mapPins.querySelector('.map__pin');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
-  var mapFiltersContainter = document.querySelector('.map__filters-container');
+  var noticeForm = document.querySelector('.notice__form');
+  var noticeFields = noticeForm.querySelectorAll('.form__element');
+  var addressField = noticeForm.querySelector('#address');
+  var mapPinMain = mapPins.querySelector('.map__pin--main');
 
   /**
    * Fill array of ads
@@ -226,7 +244,20 @@
 
     pin.appendChild(img);
 
+    pin.addEventListener('click', function (evt) {
+      pinClick(evt, advert);
+    });
+
     return pin;
+  };
+
+  var renderMainPin = function (width, height) {
+    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - width);
+    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + height);
+
+    addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
+
+    return addressField;
   };
 
   /**
@@ -323,9 +354,83 @@
   };
 
   var adverts = generateAdArray(AD_COUNT);
-  var firstCard = createAdvert(adverts[0]);
+  var fragment = createPins(adverts);
+  var advertCard;
 
-  map.classList.remove('map--faded');
-  mapPins.appendChild(createPins(adverts));
-  map.insertBefore(firstCard, mapFiltersContainter);
+  /**
+   * Get active map and form
+   */
+  var enableMap = function () {
+    mapPins.appendChild(fragment);
+
+    map.classList.remove('map--faded');
+    noticeForm.classList.remove('notice__form--disabled');
+
+    setDisableField(noticeFields, false);
+  };
+
+  /**
+   * Enable or disable fields for users
+   * @param {Node} field
+   * @param {boolean} isDisabled
+   */
+  var setDisableField = function (field, isDisabled) {
+    field.forEach(function (set) {
+      set.disabled = isDisabled;
+    });
+  };
+
+  /**
+   * Render pop-up a certain pressed pin
+   * @param {Object} evt
+   * @param {Object} advert
+   */
+  var pinClick = function (evt, advert) {
+    closePin();
+
+    advertCard = createAdvert(advert);
+    map.appendChild(advertCard);
+
+    advertCard.querySelector('.popup__close').addEventListener('click', function () {
+      closePin();
+    });
+  };
+
+  /**
+   * Check for a specific (ESC) button click
+   * @param {Object} evt
+   */
+  var keydownEscape = function (evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      closePin();
+    }
+  };
+
+  /**
+   * Remove active advert of currently pin
+   */
+  var closePin = function () {
+    if (advertCard) {
+      map.removeChild(advertCard);
+      advertCard = null;
+    }
+  };
+
+  setDisableField(noticeFields, true);
+  renderMainPin(PinButtonParams.WIDTH * 0.5, PinButtonParams.HEIGHT * 0.5);
+
+  mapPins.addEventListener('keydown', keydownEscape);
+
+  mapPinButton.addEventListener('mouseup', function (evt) {
+    evt.target.classList.add('map__pin--active');
+    enableMap();
+    renderMainPin(PinButtonParams.WIDTH * 0.5, PinButtonParams.HEIGHT * 0.5 + PinButtonParams.ARROW_HEIGHT);
+  });
+
+  mapPinButton.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === KeyCodes.ENTER) {
+      enableMap();
+    }
+    renderMainPin();
+  });
 })();
