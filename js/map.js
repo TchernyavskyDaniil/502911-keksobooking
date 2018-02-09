@@ -90,9 +90,9 @@
 
   /**
    * Description of parameters of the main pin
-   * @enum {number} PinButtonParams
+   * @enum {number} PinParams
    */
-  var PinButtonParams = {
+  var PinParams = {
     WIDTH: 40,
     HEIGHT: 44,
     ARROW_HEIGHT: 22
@@ -249,19 +249,17 @@
     pin.appendChild(img);
 
     pin.addEventListener('click', function (evt) {
-      pinClick(evt, advert);
+      pinClickHandler(evt, advert);
     });
 
     return pin;
   };
 
-  var getMainPinCoords = function () {
-    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - PinButtonParams.WIDTH * 0.5);
-    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + PinButtonParams.HEIGHT * 0.5 + PinButtonParams.ARROW_HEIGHT);
+  var fillAdressField = function () {
+    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - PinParams.WIDTH * 0.5);
+    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
-
-    return addressField;
   };
 
   /**
@@ -375,11 +373,11 @@
 
   /**
    * Enable or disable fields for users
-   * @param {Node} field
+   * @param {array} fields
    * @param {boolean} isDisabled
    */
-  var setDisableField = function (field, isDisabled) {
-    field.forEach(function (set) {
+  var setDisableField = function (fields, isDisabled) {
+    fields.forEach(function (set) {
       set.disabled = isDisabled;
     });
   };
@@ -389,22 +387,20 @@
    * @param {Object} evt
    * @param {Object} advert
    */
-  var pinClick = function (evt, advert) {
+  var pinClickHandler = function (evt, advert) {
     closePin();
 
     advertCard = createAdvert(advert);
     map.appendChild(advertCard);
 
-    advertCard.querySelector('.popup__close').addEventListener('click', function () {
-      closePin();
-    });
+    advertCard.querySelector('.popup__close').addEventListener('click', closePin);
   };
 
   /**
    * Check for a specific (ESC) button click
    * @param {Object} evt
    */
-  var keydownEscape = function (evt) {
+  var keydownEscapeHandler = function (evt) {
     if (evt.keyCode === KeyCodes.ESC) {
       closePin();
     }
@@ -421,20 +417,12 @@
   };
 
   setDisableField(noticeFields, true);
-  getMainPinCoords();
+  fillAdressField();
 
-  mapPins.addEventListener('keydown', keydownEscape);
+  mapPins.addEventListener('keydown', keydownEscapeHandler);
 
-  mapPinButton.addEventListener('mouseup', function (evt) {
-    evt.target.classList.add('map__pin--active');
+  mapPinButton.addEventListener('mouseup', function () {
     enableMap();
-    getMainPinCoords();
-  });
-
-  mapPinButton.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === KeyCodes.ENTER) {
-      enableMap();
-    }
-    getMainPinCoords();
+    fillAdressField();
   });
 })();
