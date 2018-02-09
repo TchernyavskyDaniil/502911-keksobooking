@@ -251,9 +251,9 @@
     return pin;
   };
 
-  var renderMainPin = function (width, height) {
-    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - width);
-    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + height);
+  var getCoordinatesMainPin = function () {
+    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - PinButtonParams.WIDTH * 0.5);
+    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + PinButtonParams.HEIGHT * 0.5 + PinButtonParams.ARROW_HEIGHT);
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
 
@@ -417,20 +417,20 @@
   };
 
   setDisableField(noticeFields, true);
-  renderMainPin(PinButtonParams.WIDTH * 0.5, PinButtonParams.HEIGHT * 0.5);
+  getCoordinatesMainPin();
 
   mapPins.addEventListener('keydown', keydownEscape);
 
   mapPinButton.addEventListener('mouseup', function (evt) {
     evt.target.classList.add('map__pin--active');
     enableMap();
-    renderMainPin(PinButtonParams.WIDTH * 0.5, PinButtonParams.HEIGHT * 0.5 + PinButtonParams.ARROW_HEIGHT);
+    getCoordinatesMainPin();
   });
 
   mapPinButton.addEventListener('keydown', function (evt) {
     if (evt.keyCode === KeyCodes.ENTER) {
       enableMap();
     }
-    renderMainPin();
+    getCoordinatesMainPin();
   });
 })();
