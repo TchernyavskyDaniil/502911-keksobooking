@@ -88,6 +88,10 @@
     ARROW_HEIGHT: 20
   };
 
+  /**
+   * Description of parameters of the main pin
+   * @enum {number} PinButtonParams
+   */
   var PinButtonParams = {
     WIDTH: 40,
     HEIGHT: 44,
@@ -251,7 +255,7 @@
     return pin;
   };
 
-  var getCoordinatesMainPin = function () {
+  var getMainPinCoords = function () {
     var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - PinButtonParams.WIDTH * 0.5);
     var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + PinButtonParams.HEIGHT * 0.5 + PinButtonParams.ARROW_HEIGHT);
 
@@ -417,20 +421,20 @@
   };
 
   setDisableField(noticeFields, true);
-  getCoordinatesMainPin();
+  getMainPinCoords();
 
   mapPins.addEventListener('keydown', keydownEscape);
 
   mapPinButton.addEventListener('mouseup', function (evt) {
     evt.target.classList.add('map__pin--active');
     enableMap();
-    getCoordinatesMainPin();
+    getMainPinCoords();
   });
 
   mapPinButton.addEventListener('keydown', function (evt) {
     if (evt.keyCode === KeyCodes.ENTER) {
       enableMap();
     }
-    getCoordinatesMainPin();
+    getMainPinCoords();
   });
 })();
