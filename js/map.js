@@ -104,7 +104,7 @@
   var noticeForm = document.querySelector('.notice__form');
   var noticeFields = noticeForm.querySelectorAll('.form__element');
   var addressField = noticeForm.querySelector('#address');
-  var mapPinMain = mapPins.querySelector('.map__pin--main');
+  var pinMain = mapPins.querySelector('.map__pin--main');
 
   /**
    * Fill array of ads
@@ -255,8 +255,8 @@
   };
 
   var fillAdressField = function () {
-    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - PinParams.WIDTH * 0.5);
-    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
+    var buttonOffsetX = 'X: ' + (pinMain.offsetLeft - PinParams.WIDTH * 0.5);
+    var buttonOffsetY = 'Y: ' + (pinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
   };
@@ -426,8 +426,8 @@
   var pinMainMouseupHandler = function () {
     enableMap();
     fillAdressField();
-    mapPinMain.removeEventListener('mouseup', pinMainMouseupHandler);
+    pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
 
-  mapPinMain.addEventListener('mouseup', pinMainMouseupHandler);
+  pinMain.addEventListener('mouseup', pinMainMouseupHandler);
 })();
