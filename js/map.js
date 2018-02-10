@@ -405,6 +405,7 @@
     if (evt.keyCode === KeyCodes.ESC) {
       closeAdvertCard();
     }
+    console.log('TRUE');
   };
 
   /**
@@ -414,6 +415,7 @@
     if (advertCard) {
       map.removeChild(advertCard);
       advertCard = null;
+      document.removeEventListener('keydown', keydownEscapeHandler);
     }
   };
 
