@@ -312,7 +312,7 @@
       cardFeature.appendChild(getRenderElement(feature));
     });
 
-    cardAdvert.querySelector('.popup__close').addEventListener('click', closePin);
+    cardAdvert.querySelector('.popup__close').addEventListener('click', closeAdvertCard);
 
     return cardAdvert;
   };
@@ -389,7 +389,7 @@
    * @param {Object} advert
    */
   var pinClickHandler = function (evt, advert) {
-    closePin();
+    closeAdvertCard();
 
     advertCard = createAdvertCard(advert);
     map.appendChild(advertCard);
@@ -403,14 +403,14 @@
    */
   var keydownEscapeHandler = function (evt) {
     if (evt.keyCode === KeyCodes.ESC) {
-      closePin();
+      closeAdvertCard();
     }
   };
 
   /**
    * Close current pop-up
    */
-  var closePin = function () {
+  var closeAdvertCard = function () {
     if (advertCard) {
       map.removeChild(advertCard);
       advertCard = null;
