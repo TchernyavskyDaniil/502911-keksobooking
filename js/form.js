@@ -2,7 +2,7 @@
 
 (function () {
   /**
-   *
+   * Minimum price for each type of house
    * @enum {number}
    */
   var MinPricesHouse = {
@@ -21,11 +21,17 @@
   var guests = form.querySelector('#capacity');
   var title = form.querySelector('#title');
 
-  var typeSelectHandler = function () {
+  /**
+   * Get min value for special selected house
+   */
+  var getMinPrice = function () {
     price.min = MinPricesHouse[selectHouse.value];
     price.placeholder = price.min;
   };
 
+  /**
+   * Get customized error for a special incorrect input field 'amount per night'
+   */
   var priceValidity = function () {
     var message;
     if (price.validity.rangeUnderflow) {
@@ -40,6 +46,9 @@
     }
   };
 
+  /**
+   * Get customized error for a special incorrect input field 'title'
+   */
   var titleValidity = function () {
     var message;
     if (title.validity.valueMissing) {
@@ -56,12 +65,22 @@
     }
   };
 
-  var synchByValue = function (checkOne, checkTwo) {
-    var value = checkOne.value;
-    checkTwo.value = (value === '100') ? '0' : value;
-    return checkTwo.value;
+  /**
+   * Synchronize same fields, when user choosing one of two fields
+   * @param {Node} firstValue
+   * @param {Node} secondValue
+   * @return {number}
+   */
+  var synchByValue = function (firstValue, secondValue) {
+    var value = firstValue.value;
+    secondValue.value = (value === '100') ? '0' : value;
+    return secondValue.value;
   };
 
+  /**
+   * Disabled optional guests fields
+   * @param {number} currentGuests - Get value of rooms
+   */
   var disableOptionsGuests = function (currentGuests) {
     [].slice.call(guests.options).forEach(function (option) {
       if (currentGuests === '0') {
@@ -72,13 +91,20 @@
     });
   };
 
+  /**
+   * Binding initial states of fields
+   */
   var initialForm = function () {
-    typeSelectHandler();
+    getMinPrice();
     synchByValue(rooms, guests);
     disableOptionsGuests(synchByValue(rooms, guests));
   };
+
+  /**
+   * Binding listeners in one function
+   */
   var addListeners = function () {
-    selectHouse.addEventListener('change', typeSelectHandler);
+    selectHouse.addEventListener('change', getMinPrice);
 
     checkIn.addEventListener('change', function () {
       synchByValue(checkIn, checkOut);
