@@ -98,6 +98,17 @@
     ARROW_HEIGHT: 22
   };
 
+  /**
+   * Minimum price for each type of house
+   * @enum {number}
+   */
+  var MinPricesHouse = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
+  };
+
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
@@ -105,6 +116,13 @@
   var noticeFields = noticeForm.querySelectorAll('.form__element');
   var addressField = noticeForm.querySelector('#address');
   var pinMain = mapPins.querySelector('.map__pin--main');
+  var price = noticeForm.querySelector('#price');
+  var selectHouse = noticeForm.querySelector('#type');
+  var checkIn = noticeForm.querySelector('#timein');
+  var checkOut = noticeForm.querySelector('#timeout');
+  var rooms = noticeForm.querySelector('#room_number');
+  var guests = noticeForm.querySelector('#capacity');
+  var title = noticeForm.querySelector('#title');
 
   /**
    * Fill array of ads
@@ -168,14 +186,14 @@
 
   /**
    * Search a type of house by a specific word
-   * @param {string} title
+   * @param {string} titleName
    * @return {string}
    */
-  var getHouseType = function (title) {
+  var getHouseType = function (titleName) {
     var indexTitle = 0;
 
     Object.keys(houseType).forEach(function (key) {
-      if (RegExp(key).test(title.toLowerCase())) {
+      if (RegExp(key).test(titleName.toLowerCase())) {
         indexTitle = houseType[key];
       }
     });
@@ -418,11 +436,112 @@
     }
   };
 
+  /**
+   * Get min value for special selected house
+   */
+  var getMinPrice = function () {
+    price.min = MinPricesHouse[selectHouse.value];
+    price.placeholder = price.min;
+  };
+
+  /**
+   * Get customized error for a special incorrect input field 'amount per night'
+   */
+  var priceValidity = function () {
+    if (price.validity.rangeUnderflow) {
+      price.setCustomValidity('Цена не может быть ниже ' + price.min + ' рублей!');
+    } else if (price.validity.rangeOverflow) {
+      price.setCustomValidity('Цена не должна быть выше 1 000 000 рублей!');
+    } else if (price.validity.valueMissing) {
+      price.setCustomValidity('Вы забыли указать цену!');
+    } else {
+      price.setCustomValidity('');
+    }
+  };
+
+  /**
+   * Get customized error for a special incorrect input field 'title'
+   */
+  var titleValidity = function () {
+    if (title.validity.valueMissing) {
+      title.setCustomValidity('Вы забыли про заголовок!');
+    } else if (title.validity.tooShort) {
+      title.setCustomValidity('Заголовок должен содержать не менее 30 символов. Сейчас: ' + title.value.length);
+    } else if (title.validity.tooLong) {
+      title.setCustomValidity('Длина заголовка не должна превышать 100 символов. Сейчас: ' + title.value.length);
+    } else {
+      title.setCustomValidity('');
+    }
+  };
+
+  /**
+   * Synchronize same fields, when user choosing one of two fields
+   * @param {Node} firstValue
+   * @param {Node} secondValue
+   * @return {number}
+   */
+  var synchByValue = function (firstValue, secondValue) {
+    var value = firstValue.value;
+    secondValue.value = (value === '100') ? '0' : value;
+    return secondValue.value;
+  };
+
+  /**
+   * Disabled optional guests fields
+   * @param {number} currentGuests - Get value of rooms
+   */
+  var disableOptionsGuests = function (currentGuests) {
+    [].slice.call(guests.options).forEach(function (option) {
+      if (currentGuests === 0) {
+        option.disabled = (option.value !== currentGuests);
+      } else {
+        option.disabled = (option.value > currentGuests || option.value === '0');
+      }
+    });
+  };
+
+  /**
+   * Binding initial states of fields
+   */
+  var initialForm = function () {
+    getMinPrice();
+    synchByValue(rooms, guests);
+    disableOptionsGuests(synchByValue(rooms, guests));
+    fillAdressField();
+  };
+
+  /**
+   * Binding listeners in one function
+   */
+  var addListeners = function () {
+    selectHouse.addEventListener('change', getMinPrice);
+
+    checkIn.addEventListener('change', function () {
+      synchByValue(checkIn, checkOut);
+    });
+
+    checkOut.addEventListener('change', function () {
+      synchByValue(checkOut, checkIn);
+    });
+
+    rooms.addEventListener('change', function () {
+      disableOptionsGuests(synchByValue(rooms, guests));
+    });
+
+    noticeForm.addEventListener('invalid', function (evt) {
+      priceValidity();
+      titleValidity();
+      evt.target.style.borderColor = 'red';
+    }, true);
+  };
+
+  initialForm();
+  addListeners();
+  fillAdressField();
+
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
   });
-
-  fillAdressField();
 
   var pinMainMouseupHandler = function () {
     enableMap();
