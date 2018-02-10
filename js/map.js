@@ -90,9 +90,9 @@
 
   /**
    * Description of parameters of the main pin
-   * @enum {number} PinButtonParams
+   * @enum {number} PinParams
    */
-  var PinButtonParams = {
+  var PinParams = {
     WIDTH: 40,
     HEIGHT: 44,
     ARROW_HEIGHT: 22
@@ -100,12 +100,11 @@
 
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
-  var mapPinButton = mapPins.querySelector('.map__pin');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFields = noticeForm.querySelectorAll('.form__element');
   var addressField = noticeForm.querySelector('#address');
-  var mapPinMain = mapPins.querySelector('.map__pin--main');
+  var pinMain = mapPins.querySelector('.map__pin--main');
 
   /**
    * Fill array of ads
@@ -249,19 +248,17 @@
     pin.appendChild(img);
 
     pin.addEventListener('click', function (evt) {
-      pinClick(evt, advert);
+      pinClickHandler(evt, advert);
     });
 
     return pin;
   };
 
-  var getMainPinCoords = function () {
-    var buttonOffsetX = 'X: ' + (mapPinMain.offsetLeft - PinButtonParams.WIDTH * 0.5);
-    var buttonOffsetY = 'Y: ' + (mapPinMain.offsetTop + PinButtonParams.HEIGHT * 0.5 + PinButtonParams.ARROW_HEIGHT);
+  var fillAdressField = function () {
+    var buttonOffsetX = 'X: ' + (pinMain.offsetLeft - PinParams.WIDTH * 0.5);
+    var buttonOffsetY = 'Y: ' + (pinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
-
-    return addressField;
   };
 
   /**
@@ -284,7 +281,7 @@
    * @param {string} advert
    * @return {Node}
    */
-  var createAdvert = function (advert) {
+  var createAdvertCard = function (advert) {
     var cardAdvert = mapCardTemplate.cloneNode(true);
 
     var cardTitle = cardAdvert.querySelector('h3');
@@ -314,6 +311,8 @@
     advert.offer.features.forEach(function (feature) {
       cardFeature.appendChild(getRenderElement(feature));
     });
+
+    cardAdvert.querySelector('.popup__close').addEventListener('click', closeAdvertCard);
 
     return cardAdvert;
   };
@@ -370,7 +369,9 @@
     map.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
 
-    setDisableField(noticeFields, false);
+    noticeFields.forEach(function (field) {
+      setDisableField(field, false);
+    });
   };
 
   /**
@@ -379,9 +380,7 @@
    * @param {boolean} isDisabled
    */
   var setDisableField = function (field, isDisabled) {
-    field.forEach(function (set) {
-      set.disabled = isDisabled;
-    });
+    field.disabled = isDisabled;
   };
 
   /**
@@ -389,52 +388,46 @@
    * @param {Object} evt
    * @param {Object} advert
    */
-  var pinClick = function (evt, advert) {
-    closePin();
+  var pinClickHandler = function (evt, advert) {
+    closeAdvertCard();
 
-    advertCard = createAdvert(advert);
+    advertCard = createAdvertCard(advert);
     map.appendChild(advertCard);
 
-    advertCard.querySelector('.popup__close').addEventListener('click', function () {
-      closePin();
-    });
+    document.addEventListener('keydown', keydownEscapeHandler);
   };
 
   /**
    * Check for a specific (ESC) button click
    * @param {Object} evt
    */
-  var keydownEscape = function (evt) {
+  var keydownEscapeHandler = function (evt) {
     if (evt.keyCode === KeyCodes.ESC) {
-      closePin();
+      closeAdvertCard();
     }
   };
 
   /**
-   * Remove active advert of currently pin
+   * Close current pop-up
    */
-  var closePin = function () {
+  var closeAdvertCard = function () {
     if (advertCard) {
       map.removeChild(advertCard);
       advertCard = null;
     }
   };
 
-  setDisableField(noticeFields, true);
-  getMainPinCoords();
+  noticeFields.forEach(function (field) {
+    setDisableField(field, true);
+  });
 
-  mapPins.addEventListener('keydown', keydownEscape);
+  fillAdressField();
 
-  mapPinButton.addEventListener('mouseup', function (evt) {
-    evt.target.classList.add('map__pin--active');
+  var pinMainMouseupHandler = function () {
     enableMap();
-    getMainPinCoords();
-  });
+    fillAdressField();
+    pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
+  };
 
-  mapPinButton.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === KeyCodes.ENTER) {
-      enableMap();
-    }
-    getMainPinCoords();
-  });
+  pinMain.addEventListener('mouseup', pinMainMouseupHandler);
 })();

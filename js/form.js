@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  /**
+   *
+   * @enum {number}
+   */
   var MinPricesHouse = {
     'bungalo': 0,
     'flat': 1000,
