@@ -112,17 +112,18 @@
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
-  var noticeForm = document.querySelector('.notice__form');
-  var noticeFields = noticeForm.querySelectorAll('.form__element');
-  var addressField = noticeForm.querySelector('#address');
+  var form = document.querySelector('.notice__form');
+  var noticeFields = form.querySelectorAll('.form__element');
+  var addressField = form.querySelector('#address');
   var pinMain = mapPins.querySelector('.map__pin--main');
-  var price = noticeForm.querySelector('#price');
-  var selectHouse = noticeForm.querySelector('#type');
-  var checkIn = noticeForm.querySelector('#timein');
-  var checkOut = noticeForm.querySelector('#timeout');
-  var rooms = noticeForm.querySelector('#room_number');
-  var guests = noticeForm.querySelector('#capacity');
-  var title = noticeForm.querySelector('#title');
+  var price = form.querySelector('#price');
+  var selectHouse = form.querySelector('#type');
+  var checkIn = form.querySelector('#timein');
+  var checkOut = form.querySelector('#timeout');
+  var rooms = form.querySelector('#room_number');
+  var guests = form.querySelector('#capacity');
+  var title = form.querySelector('#title');
+  var resetButton = form.querySelector('.form__reset');
 
   /**
    * Fill array of ads
@@ -385,7 +386,7 @@
     mapPins.appendChild(fragment);
 
     map.classList.remove('map--faded');
-    noticeForm.classList.remove('notice__form--disabled');
+    form.classList.remove('notice__form--disabled');
 
     noticeFields.forEach(function (field) {
       setDisableField(field, false);
@@ -528,7 +529,7 @@
       disableOptionsGuests(synchByValue(rooms, guests));
     });
 
-    noticeForm.addEventListener('invalid', function (evt) {
+    form.addEventListener('invalid', function (evt) {
       priceValidity();
       titleValidity();
       evt.target.style.borderColor = 'red';
@@ -550,4 +551,10 @@
   };
 
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
+
+  resetButton.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    resetButton.form.reset();
+    initialForm();
+  });
 })();
