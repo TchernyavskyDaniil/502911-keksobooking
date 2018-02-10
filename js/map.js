@@ -369,8 +369,6 @@
     map.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
 
-    document.addEventListener('keydown', keydownEscapeHandler);
-
     noticeFields.forEach(function (field) {
       setDisableField(field, false);
     });
@@ -394,8 +392,9 @@
     closePin();
 
     advertCard = createAdvertCard(advert);
-
     map.appendChild(advertCard);
+
+    document.addEventListener('keydown', keydownEscapeHandler);
   };
 
   /**
@@ -424,11 +423,11 @@
 
   fillAdressField();
 
-  var buttonMouseupHandler = function () {
+  var pinMainMouseupHandler = function () {
     enableMap();
     fillAdressField();
-    mapPinMain.removeEventListener('mouseup', buttonMouseupHandler);
+    mapPinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
 
-  mapPinMain.addEventListener('mouseup', buttonMouseupHandler);
+  mapPinMain.addEventListener('mouseup', pinMainMouseupHandler);
 })();
