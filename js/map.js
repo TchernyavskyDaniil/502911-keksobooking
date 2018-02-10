@@ -405,7 +405,6 @@
     if (evt.keyCode === KeyCodes.ESC) {
       closeAdvertCard();
     }
-    console.log('TRUE');
   };
 
   /**
