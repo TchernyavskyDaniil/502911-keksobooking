@@ -15,10 +15,41 @@
   var checkOut = form.querySelector('#timeout');
   var rooms = form.querySelector('#room_number');
   var guests = form.querySelector('#capacity');
+  var title = form.querySelector('#title');
 
-  var setMinPrice = function () {
+  var typeSelectHandler = function () {
     price.min = MinPricesHouse[selectHouse.value];
     price.placeholder = price.min;
+  };
+
+  var priceValidity = function () {
+    var message;
+    if (price.validity.rangeUnderflow) {
+      message = 'Цена не может быть ниже ' + price.min + ' рублей!';
+      price.setCustomValidity(message);
+    } else if (price.validity.rangeOverflow) {
+      price.setCustomValidity('Цена не должна быть выше 1 000 000 рублей!');
+    } else if (price.validity.valueMissing) {
+      price.setCustomValidity('Вы забыли указать цену!');
+    } else {
+      price.setCustomValidity('');
+    }
+  };
+
+  var titleValidity = function () {
+    var message;
+    if (title.validity.valueMissing) {
+      message = 'Вы забыли про заголовок!';
+      title.setCustomValidity(message);
+    } else if (title.validity.tooShort) {
+      message = 'Заголовок должен содержать не менее 30 символов. Сейчас: ' + title.value.length;
+      title.setCustomValidity(message);
+    } else if (title.validity.tooLong) {
+      message = 'Длина заголовка не должна превышать 100 символов. Сейчас: ' + title.value.length;
+      title.setCustomValidity(message);
+    } else {
+      title.setCustomValidity('');
+    }
   };
 
   var synchByValue = function (checkOne, checkTwo) {
@@ -29,24 +60,42 @@
 
   var disableOptionsGuests = function (currentGuests) {
     [].slice.call(guests.options).forEach(function (option) {
-      if (option.value === '0') {
-        option.disabled = currentGuests;
+      if (currentGuests === '0') {
+        option.disabled = (option.value !== currentGuests);
+      } else {
+        option.disabled = (option.value > currentGuests || option.value === '0');
       }
     });
   };
 
-  selectHouse.addEventListener('change', setMinPrice);
-
-  checkIn.addEventListener('change', function () {
-    synchByValue(checkIn, checkOut);
-  });
-
-  checkOut.addEventListener('change', function () {
-    synchByValue(checkOut, checkIn);
-  });
-
-  rooms.addEventListener('change', function () {
+  var initialForm = function () {
+    typeSelectHandler();
+    synchByValue(rooms, guests);
     disableOptionsGuests(synchByValue(rooms, guests));
-  });
+  };
+  var addListeners = function () {
+    selectHouse.addEventListener('change', typeSelectHandler);
+
+    checkIn.addEventListener('change', function () {
+      synchByValue(checkIn, checkOut);
+    });
+
+    checkOut.addEventListener('change', function () {
+      synchByValue(checkOut, checkIn);
+    });
+
+    rooms.addEventListener('change', function () {
+      disableOptionsGuests(synchByValue(rooms, guests));
+    });
+
+    form.addEventListener('invalid', function (evt) {
+      priceValidity();
+      titleValidity();
+      evt.target.style.borderColor = 'red';
+    }, true);
+  };
+
+  initialForm();
+  addListeners();
 })();
 
