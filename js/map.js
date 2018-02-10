@@ -100,7 +100,6 @@
 
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
-  var mapPinButton = mapPins.querySelector('.map__pin');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFields = noticeForm.querySelectorAll('.form__element');
@@ -282,7 +281,7 @@
    * @param {string} advert
    * @return {Node}
    */
-  var createAdvert = function (advert) {
+  var createAdvertCard = function (advert) {
     var cardAdvert = mapCardTemplate.cloneNode(true);
 
     var cardTitle = cardAdvert.querySelector('h3');
@@ -312,6 +311,8 @@
     advert.offer.features.forEach(function (feature) {
       cardFeature.appendChild(getRenderElement(feature));
     });
+
+    cardAdvert.querySelector('.popup__close').addEventListener('click', closePin);
 
     return cardAdvert;
   };
@@ -368,18 +369,18 @@
     map.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
 
-    setDisableField(noticeFields, false);
+    noticeFields.forEach(function (field) {
+      setDisableField(field, false);
+    });
   };
 
   /**
    * Enable or disable fields for users
-   * @param {array} fields
+   * @param {Node} field
    * @param {boolean} isDisabled
    */
-  var setDisableField = function (fields, isDisabled) {
-    fields.forEach(function (set) {
-      set.disabled = isDisabled;
-    });
+  var setDisableField = function (field, isDisabled) {
+    field.disabled = isDisabled;
   };
 
   /**
@@ -390,10 +391,9 @@
   var pinClickHandler = function (evt, advert) {
     closePin();
 
-    advertCard = createAdvert(advert);
-    map.appendChild(advertCard);
+    advertCard = createAdvertCard(advert);
 
-    advertCard.querySelector('.popup__close').addEventListener('click', closePin);
+    map.appendChild(advertCard);
   };
 
   /**
@@ -407,7 +407,7 @@
   };
 
   /**
-   * Remove active advert of currently pin
+   * Close current pop-up
    */
   var closePin = function () {
     if (advertCard) {
@@ -416,13 +416,19 @@
     }
   };
 
-  setDisableField(noticeFields, true);
+  noticeFields.forEach(function (field) {
+    setDisableField(field, true);
+  });
+
   fillAdressField();
 
-  mapPins.addEventListener('keydown', keydownEscapeHandler);
+  document.addEventListener('keydown', keydownEscapeHandler);
 
-  mapPinButton.addEventListener('mouseup', function () {
+  var inActiveHandler = function () {
     enableMap();
     fillAdressField();
-  });
+    mapPinMain.removeEventListener('mouseup', inActiveHandler);
+  };
+
+  mapPinMain.addEventListener('mouseup', inActiveHandler);
 })();
