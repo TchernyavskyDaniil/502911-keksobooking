@@ -369,6 +369,8 @@
     map.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
 
+    document.addEventListener('keydown', keydownEscapeHandler);
+
     noticeFields.forEach(function (field) {
       setDisableField(field, false);
     });
@@ -422,13 +424,11 @@
 
   fillAdressField();
 
-  document.addEventListener('keydown', keydownEscapeHandler);
-
-  var inActiveHandler = function () {
+  var buttonMouseupHandler = function () {
     enableMap();
     fillAdressField();
-    mapPinMain.removeEventListener('mouseup', inActiveHandler);
+    mapPinMain.removeEventListener('mouseup', buttonMouseupHandler);
   };
 
-  mapPinMain.addEventListener('mouseup', inActiveHandler);
+  mapPinMain.addEventListener('mouseup', buttonMouseupHandler);
 })();
