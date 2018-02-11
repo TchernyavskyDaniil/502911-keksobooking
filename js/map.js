@@ -457,6 +457,7 @@
       price.setCustomValidity('Вы забыли указать цену!');
     } else {
       price.setCustomValidity('');
+      price.style.borderColor = '';
     }
   };
 
@@ -472,6 +473,7 @@
       title.setCustomValidity('Длина заголовка не должна превышать 100 символов. Сейчас: ' + title.value.length);
     } else {
       title.setCustomValidity('');
+      title.style.borderColor = '';
     }
   };
 
@@ -499,7 +501,6 @@
       }
     });
   };
-
 
   /**
    * Binding initial states of fields
@@ -530,9 +531,9 @@
     });
 
     form.addEventListener('invalid', function (evt) {
+      evt.target.style.borderColor = 'red';
       priceValidity();
       titleValidity();
-      evt.target.style.borderColor = 'red';
     }, true);
   };
 
