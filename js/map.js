@@ -492,7 +492,7 @@
    */
   var disableOptionsGuests = function (currentGuests) {
     [].slice.call(guests.options).forEach(function (option) {
-      if (currentGuests === 0) {
+      if (currentGuests === '0') {
         option.disabled = (option.value !== currentGuests);
       } else {
         option.disabled = (option.value > currentGuests || option.value === '0');
