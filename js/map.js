@@ -482,8 +482,7 @@
    * @return {number}
    */
   var synchByValue = function (firstValue, secondValue) {
-    var value = firstValue.value;
-    secondValue.value = (value === '100') ? '0' : value;
+    secondValue.value = (firstValue.value === '100') ? '0' : firstValue.value;
     return secondValue.value;
   };
 
