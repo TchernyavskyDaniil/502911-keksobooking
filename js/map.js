@@ -273,7 +273,7 @@
     return pin;
   };
 
-  var fillAdressField = function () {
+  var fillAddressField = function () {
     var buttonOffsetX = 'X: ' + (pinMain.offsetLeft - PinParams.WIDTH * 0.5);
     var buttonOffsetY = 'Y: ' + (pinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
 
@@ -440,7 +440,7 @@
   /**
    * Get min value for special selected house
    */
-  var getMinPrice = function () {
+  var priceMinHandler = function () {
     price.min = MinPricesHouse[selectHouse.value];
     price.placeholder = price.min;
   };
@@ -501,21 +501,22 @@
     });
   };
 
+
   /**
    * Binding initial states of fields
    */
   var initialForm = function () {
-    getMinPrice();
+    priceMinHandler();
     synchByValue(rooms, guests);
     disableOptionsGuests(synchByValue(rooms, guests));
-    fillAdressField();
+    fillAddressField();
   };
 
   /**
    * Binding listeners in one function
    */
   var addListeners = function () {
-    selectHouse.addEventListener('change', getMinPrice);
+    selectHouse.addEventListener('change', priceMinHandler);
 
     checkIn.addEventListener('change', function () {
       synchByValue(checkIn, checkOut);
@@ -538,7 +539,7 @@
 
   initialForm();
   addListeners();
-  fillAdressField();
+  fillAddressField();
 
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
@@ -546,7 +547,7 @@
 
   var pinMainMouseupHandler = function () {
     enableMap();
-    fillAdressField();
+    fillAddressField();
     pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
 
