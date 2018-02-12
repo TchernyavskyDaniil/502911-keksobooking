@@ -533,17 +533,17 @@
       disableOptionsGuests(synchByValue(rooms, guests));
     });
 
-    form.addEventListener('invalid', function (evt) {
-      evt.target.style.borderColor = 'red';
-      priceValidity();
-      titleValidity();
-    }, true);
-
     submitButton.addEventListener('click', function () {
       inputArr.forEach(function (input) {
         input.style.borderColor = '';
       });
     });
+
+    form.addEventListener('invalid', function (evt) {
+      priceValidity();
+      titleValidity();
+      evt.target.style.borderColor = 'red';
+    }, true);
   };
 
   initialForm();
