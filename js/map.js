@@ -510,6 +510,8 @@
     synchByValue(rooms, guests);
     disableOptionsGuests(synchByValue(rooms, guests));
     fillAddressField();
+    title.style.borderColor = '';
+    price.style.borderColor = '';
   };
 
   /**
