@@ -124,6 +124,8 @@
   var guests = form.querySelector('#capacity');
   var title = form.querySelector('#title');
   var resetButton = form.querySelector('.form__reset');
+  var submitButton = form.querySelector('.form__submit');
+  var inputArr = form.querySelectorAll('input');
 
   /**
    * Fill array of ads
@@ -457,7 +459,6 @@
       price.setCustomValidity('Вы забыли указать цену!');
     } else {
       price.setCustomValidity('');
-      price.style.borderColor = '';
     }
   };
 
@@ -473,7 +474,6 @@
       title.setCustomValidity('Длина заголовка не должна превышать 100 символов. Сейчас: ' + title.value.length);
     } else {
       title.setCustomValidity('');
-      title.style.borderColor = '';
     }
   };
 
@@ -510,8 +510,9 @@
     synchByValue(rooms, guests);
     disableOptionsGuests(synchByValue(rooms, guests));
     fillAddressField();
-    title.style.borderColor = '';
-    price.style.borderColor = '';
+    inputArr.forEach(function (input) {
+      input.style.borderColor = '';
+    });
   };
 
   /**
@@ -537,11 +538,18 @@
       priceValidity();
       titleValidity();
     }, true);
+
+    form.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      inputArr.forEach(function (input) {
+        input.style.borderColor = '';
+      });
+    });
   };
 
   initialForm();
-  addListeners();
   fillAddressField();
+  addListeners();
 
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
