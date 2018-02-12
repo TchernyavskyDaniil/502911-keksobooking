@@ -102,7 +102,7 @@
    * Minimum price for each type of house
    * @enum {number}
    */
-  var MinPricesHouse = {
+  var MinHousePrices = {
     'bungalo': 0,
     'flat': 1000,
     'house': 5000,
@@ -443,7 +443,7 @@
    * Get min value for special selected house
    */
   var priceMinHandler = function () {
-    price.min = MinPricesHouse[selectHouse.value];
+    price.min = MinHousePrices[selectHouse.value];
     price.placeholder = price.min;
   };
 
@@ -483,7 +483,7 @@
    * @param {Node} secondValue
    * @return {number}
    */
-  var synchByValue = function (firstValue, secondValue) {
+  var syncByValue = function (firstValue, secondValue) {
     secondValue.value = (firstValue.value === '100') ? '0' : firstValue.value;
     return secondValue.value;
   };
@@ -507,8 +507,8 @@
    */
   var initialForm = function () {
     priceMinHandler();
-    synchByValue(rooms, guests);
-    disableOptionsGuests(synchByValue(rooms, guests));
+    syncByValue(rooms, guests);
+    disableOptionsGuests(syncByValue(rooms, guests));
     fillAddressField();
     arrInputError.forEach(function (input) {
       input.style.borderColor = '';
@@ -522,23 +522,21 @@
     selectHouse.addEventListener('change', priceMinHandler);
 
     checkIn.addEventListener('change', function () {
-      synchByValue(checkIn, checkOut);
+      syncByValue(checkIn, checkOut);
     });
 
     checkOut.addEventListener('change', function () {
-      synchByValue(checkOut, checkIn);
+      syncByValue(checkOut, checkIn);
     });
 
     rooms.addEventListener('change', function () {
-      disableOptionsGuests(synchByValue(rooms, guests));
+      disableOptionsGuests(syncByValue(rooms, guests));
     });
 
     submitButton.addEventListener('click', function () {
       arrInputError.forEach(function (input) {
-        if (input.style.borderColor === 'red') {
-          input.style.borderColor = '';
-          input.setCustomValidity('');
-        }
+        input.style.borderColor = '';
+        input.setCustomValidity('');
       });
     });
 
@@ -568,7 +566,7 @@
 
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    resetButton.form.reset();
+    form.reset();
     initialForm();
   });
 })();
