@@ -122,9 +122,10 @@
   var checkOut = form.querySelector('#timeout');
   var rooms = form.querySelector('#room_number');
   var guests = form.querySelector('#capacity');
+  var title = form.querySelector('#title');
   var resetButton = form.querySelector('.form__reset');
   var submitButton = form.querySelector('.form__submit');
-  var inputArr = form.querySelectorAll('input');
+  var arrInputError = [];
 
   /**
    * Fill array of ads
@@ -447,6 +448,36 @@
   };
 
   /**
+   * Get customized error for a special incorrect input field 'amount per night'
+   */
+  var priceValidity = function () {
+    if (price.validity.rangeUnderflow) {
+      price.setCustomValidity('Цена не может быть ниже ' + price.min + ' рублей!');
+    } else if (price.validity.rangeOverflow) {
+      price.setCustomValidity('Цена не должна быть выше 1 000 000 рублей!');
+    } else if (price.validity.valueMissing) {
+      price.setCustomValidity('Вы забыли указать цену!');
+    } else {
+      price.setCustomValidity('');
+    }
+  };
+
+  /**
+   * Get customized error for a special incorrect input field 'title'
+   */
+  var titleValidity = function () {
+    if (title.validity.valueMissing) {
+      title.setCustomValidity('Вы забыли про заголовок!');
+    } else if (title.validity.tooShort) {
+      title.setCustomValidity('Заголовок должен содержать не менее 30 символов. Сейчас: ' + title.value.length);
+    } else if (title.validity.tooLong) {
+      title.setCustomValidity('Длина заголовка не должна превышать 100 символов. Сейчас: ' + title.value.length);
+    } else {
+      title.setCustomValidity('');
+    }
+  };
+
+  /**
    * Synchronize same fields, when user choosing one of two fields
    * @param {Node} firstValue
    * @param {Node} secondValue
@@ -479,7 +510,7 @@
     synchByValue(rooms, guests);
     disableOptionsGuests(synchByValue(rooms, guests));
     fillAddressField();
-    inputArr.forEach(function (input) {
+    arrInputError.forEach(function (input) {
       input.style.borderColor = '';
     });
   };
@@ -503,13 +534,19 @@
     });
 
     submitButton.addEventListener('click', function () {
-      inputArr.forEach(function (input) {
-        input.style.borderColor = '';
+      arrInputError.forEach(function (input) {
+        if (input.style.borderColor === 'red') {
+          input.style.borderColor = '';
+          input.setCustomValidity('');
+        }
       });
     });
 
     form.addEventListener('invalid', function (evt) {
+      priceValidity();
+      titleValidity();
       evt.target.style.borderColor = 'red';
+      arrInputError.push(evt.target);
     }, true);
   };
 
