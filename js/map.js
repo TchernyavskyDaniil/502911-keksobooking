@@ -539,8 +539,7 @@
       titleValidity();
     }, true);
 
-    form.addEventListener('submit', function (evt) {
-      evt.preventDefault();
+    submitButton.addEventListener('click', function () {
       inputArr.forEach(function (input) {
         input.style.borderColor = '';
       });
