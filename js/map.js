@@ -477,6 +477,13 @@
     }
   };
 
+  var addressValidity = function (evt) {
+    if (addressField.value === '') {
+      addressField.style.borderColor = 'red';
+      evt.preventDefault();
+    }
+  };
+
   /**
    * Synchronize same fields, when user choosing one of two fields
    * @param {Node} firstValue
@@ -543,6 +550,7 @@
     form.addEventListener('invalid', function (evt) {
       priceValidity();
       titleValidity();
+      addressValidity(evt);
       evt.target.style.borderColor = 'red';
       arrInputError.push(evt.target);
     }, true);
