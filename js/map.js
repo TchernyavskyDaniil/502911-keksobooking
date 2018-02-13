@@ -477,6 +477,10 @@
     }
   };
 
+  /**
+   * Get customized error for a empty input field 'address'
+   * @param {Object} evt
+   */
   var addressValidity = function (evt) {
     if (addressField.value === '') {
       addressField.style.borderColor = 'red';
