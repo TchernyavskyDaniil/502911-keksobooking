@@ -496,11 +496,11 @@
   };
 
   /**
-   * Synchronize same fields, when user choosing one of two fields
+   * Replaced one value to another
    * @param {Node} firstValue
    * @param {Node} secondValue
    */
-  var syncByValue = function (firstValue, secondValue) {
+  var getReplacedValue = function (firstValue, secondValue) {
     secondValue.value = (firstValue.value === '100') ? '0' : firstValue.value;
   };
 
@@ -514,7 +514,7 @@
       guests.options[i].disabled = !select.includes(Number(guests.options[i].value));
     }
 
-    syncByValue(rooms, guests);
+    getReplacedValue(rooms, guests);
   };
 
   /**
@@ -522,7 +522,7 @@
    */
   var initialForm = function () {
     priceMinHandler();
-    syncByValue(rooms, guests);
+    getReplacedValue(rooms, guests);
     roomSelectChangeHandler();
     fillAddressField();
     arrInputError.forEach(function (input) {
@@ -533,15 +533,15 @@
   /**
    * Binding listeners in one function
    */
-  var combineListenersForm = function () {
+  var subscribeToFormEvents = function () {
     selectHouse.addEventListener('change', priceMinHandler);
 
     checkIn.addEventListener('change', function () {
-      syncByValue(checkIn, checkOut);
+      getReplacedValue(checkIn, checkOut);
     });
 
     checkOut.addEventListener('change', function () {
-      syncByValue(checkOut, checkIn);
+      getReplacedValue(checkOut, checkIn);
     });
 
     rooms.addEventListener('change', roomSelectChangeHandler);
@@ -564,7 +564,7 @@
 
   initialForm();
   fillAddressField();
-  combineListenersForm();
+  subscribeToFormEvents();
 
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
