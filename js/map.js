@@ -109,6 +109,13 @@
     'palace': 10000
   };
 
+  var roomsGuestDependencies = {
+    1: [1],
+    2: [1, 2],
+    3: [1, 2, 3],
+    100: [0]
+  };
+
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
@@ -492,25 +499,22 @@
    * Synchronize same fields, when user choosing one of two fields
    * @param {Node} firstValue
    * @param {Node} secondValue
-   * @return {number}
    */
   var syncByValue = function (firstValue, secondValue) {
     secondValue.value = (firstValue.value === '100') ? '0' : firstValue.value;
-    return secondValue.value;
   };
 
   /**
    * Disabled optional guests fields
-   * @param {number} currentGuests - Get value of rooms
    */
-  var disableOptionsGuests = function (currentGuests) {
-    [].slice.call(guests.options).forEach(function (option) {
-      if (currentGuests === '0') {
-        option.disabled = (option.value !== currentGuests);
-      } else {
-        option.disabled = (option.value > currentGuests || option.value === '0');
-      }
-    });
+  var roomSelectChangeHandler = function () {
+    var select = roomsGuestDependencies[rooms.value];
+
+    for (var i = 0; i < guests.options.length; i++) {
+      guests.options[i].disabled = !select.includes(Number(guests.options[i].value));
+    }
+
+    syncByValue(rooms, guests);
   };
 
   /**
@@ -519,7 +523,7 @@
   var initialForm = function () {
     priceMinHandler();
     syncByValue(rooms, guests);
-    disableOptionsGuests(syncByValue(rooms, guests));
+    roomSelectChangeHandler();
     fillAddressField();
     arrInputError.forEach(function (input) {
       input.style.borderColor = '';
@@ -529,7 +533,7 @@
   /**
    * Binding listeners in one function
    */
-  var addListeners = function () {
+  var combineListenersForm = function () {
     selectHouse.addEventListener('change', priceMinHandler);
 
     checkIn.addEventListener('change', function () {
@@ -540,9 +544,7 @@
       syncByValue(checkOut, checkIn);
     });
 
-    rooms.addEventListener('change', function () {
-      disableOptionsGuests(syncByValue(rooms, guests));
-    });
+    rooms.addEventListener('change', roomSelectChangeHandler);
 
     submitButton.addEventListener('click', function () {
       arrInputError.forEach(function (input) {
@@ -562,7 +564,7 @@
 
   initialForm();
   fillAddressField();
-  addListeners();
+  combineListenersForm();
 
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
