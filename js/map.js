@@ -110,10 +110,10 @@
   };
 
   var roomsGuestDependencies = {
-    1: [1],
-    2: [1, 2],
-    3: [1, 2, 3],
-    100: [0]
+    1: ['1'],
+    2: ['1', '2'],
+    3: ['1', '2', '3'],
+    100: ['0']
   };
 
   var map = document.querySelector('.map');
@@ -449,7 +449,7 @@
   /**
    * Get min value for special selected house
    */
-  var priceMinHandler = function () {
+  var getPriceMinHandler = function () {
     price.min = MinHousePrices[selectHouse.value];
     price.placeholder = price.min;
   };
@@ -457,7 +457,7 @@
   /**
    * Get customized error for a special incorrect input field 'amount per night'
    */
-  var priceValidity = function () {
+  var getPriceValidity = function () {
     if (price.validity.rangeUnderflow) {
       price.setCustomValidity('Цена не может быть ниже ' + price.min + ' рублей!');
     } else if (price.validity.rangeOverflow) {
@@ -472,7 +472,7 @@
   /**
    * Get customized error for a special incorrect input field 'title'
    */
-  var titleValidity = function () {
+  var getTitleValidity = function () {
     if (title.validity.valueMissing) {
       title.setCustomValidity('Вы забыли про заголовок!');
     } else if (title.validity.tooShort) {
@@ -488,7 +488,7 @@
    * Get customized error for a empty input field 'address'
    * @param {Object} evt
    */
-  var addressValidity = function (evt) {
+  var getAddressValidity = function (evt) {
     if (addressField.value === '') {
       addressField.style.borderColor = 'red';
       evt.preventDefault();
@@ -497,11 +497,11 @@
 
   /**
    * Synchronizing fields
-   * @param {Node} firstValue
-   * @param {Node} secondValue
+   * @param {Node} firstNode
+   * @param {Node} secondNode
    */
-  var syncInputValues = function (firstValue, secondValue) {
-    secondValue.value = firstValue.value;
+  var syncInputValues = function (firstNode, secondNode) {
+    secondNode.value = firstNode.value;
   };
 
   /**
@@ -511,16 +511,16 @@
     var select = roomsGuestDependencies[rooms.value];
     guests.value = (rooms.value === '100') ? '0' : rooms.value;
 
-    for (var i = 0; i < guests.options.length; i++) {
-      guests.options[i].disabled = !select.includes(Number(guests.options[i].value));
-    }
+    [].slice.call(guests.options).forEach(function (option) {
+      option.disabled = !select.includes(option.value);
+    });
   };
 
   /**
    * Binding initial states of fields
    */
-  var initialForm = function () {
-    priceMinHandler();
+  var getInitialForm = function () {
+    getPriceMinHandler();
     roomsChangeHandler();
     fillAddressField();
     arrInputError.forEach(function (input) {
@@ -532,7 +532,7 @@
    * Binding listeners in one function
    */
   var subscribeToFormEvents = function () {
-    selectHouse.addEventListener('change', priceMinHandler);
+    selectHouse.addEventListener('change', getPriceMinHandler);
 
     checkIn.addEventListener('change', function () {
       syncInputValues(checkIn, checkOut);
@@ -552,17 +552,15 @@
     });
 
     form.addEventListener('invalid', function (evt) {
-      priceValidity();
-      titleValidity();
-      addressValidity(evt);
+      getPriceValidity();
+      getTitleValidity();
+      getAddressValidity(evt);
       evt.target.style.borderColor = 'red';
       arrInputError.push(evt.target);
     }, true);
   };
 
-  initialForm();
   fillAddressField();
-  subscribeToFormEvents();
 
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
@@ -571,6 +569,8 @@
   var pinMainMouseupHandler = function () {
     enableMap();
     fillAddressField();
+    getInitialForm();
+    subscribeToFormEvents();
     pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
 
@@ -579,6 +579,6 @@
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
     form.reset();
-    initialForm();
+    getInitialForm();
   });
 })();
