@@ -449,7 +449,7 @@
   /**
    * Get min value for special selected house
    */
-  var getPriceMinHandler = function () {
+  var priceChangeHandler = function () {
     price.min = MinHousePrices[selectHouse.value];
     price.placeholder = price.min;
   };
@@ -457,7 +457,7 @@
   /**
    * Get customized error for a special incorrect input field 'amount per night'
    */
-  var getPriceValidity = function () {
+  var validatePrice = function () {
     if (price.validity.rangeUnderflow) {
       price.setCustomValidity('Цена не может быть ниже ' + price.min + ' рублей!');
     } else if (price.validity.rangeOverflow) {
@@ -472,7 +472,7 @@
   /**
    * Get customized error for a special incorrect input field 'title'
    */
-  var getTitleValidity = function () {
+  var validateTitle = function () {
     if (title.validity.valueMissing) {
       title.setCustomValidity('Вы забыли про заголовок!');
     } else if (title.validity.tooShort) {
@@ -488,7 +488,7 @@
    * Get customized error for a empty input field 'address'
    * @param {Object} evt
    */
-  var getAddressValidity = function (evt) {
+  var validateAddress = function (evt) {
     if (addressField.value === '') {
       addressField.style.borderColor = 'red';
       evt.preventDefault();
@@ -517,10 +517,10 @@
   };
 
   /**
-   * Binding initial states of fields
+   * Binding initialize states of fields
    */
-  var getInitialForm = function () {
-    getPriceMinHandler();
+  var initializeForm = function () {
+    priceChangeHandler();
     roomsChangeHandler();
     fillAddressField();
     arrInputError.forEach(function (input) {
@@ -532,7 +532,7 @@
    * Binding listeners in one function
    */
   var subscribeToFormEvents = function () {
-    selectHouse.addEventListener('change', getPriceMinHandler);
+    selectHouse.addEventListener('change', priceChangeHandler);
 
     checkIn.addEventListener('change', function () {
       syncInputValues(checkIn, checkOut);
@@ -552,9 +552,9 @@
     });
 
     form.addEventListener('invalid', function (evt) {
-      getPriceValidity();
-      getTitleValidity();
-      getAddressValidity(evt);
+      validatePrice();
+      validateTitle();
+      validateAddress(evt);
       evt.target.style.borderColor = 'red';
       arrInputError.push(evt.target);
     }, true);
@@ -569,7 +569,7 @@
   var pinMainMouseupHandler = function () {
     enableMap();
     fillAddressField();
-    getInitialForm();
+    initializeForm();
     subscribeToFormEvents();
     pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
@@ -579,6 +579,6 @@
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
     form.reset();
-    getInitialForm();
+    initializeForm();
   });
 })();
