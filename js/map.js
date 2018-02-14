@@ -98,24 +98,6 @@
     ARROW_HEIGHT: 22
   };
 
-  /**
-   * Minimum price for each type of house
-   * @enum {number}
-   */
-  var MinHousePrices = {
-    'bungalo': 0,
-    'flat': 1000,
-    'house': 5000,
-    'palace': 10000
-  };
-
-  var roomsGuestDependencies = {
-    1: ['1'],
-    2: ['1', '2'],
-    3: ['1', '2', '3'],
-    100: ['0']
-  };
-
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
@@ -123,16 +105,6 @@
   var noticeFields = form.querySelectorAll('.form__element');
   var addressField = form.querySelector('#address');
   var pinMain = mapPins.querySelector('.map__pin--main');
-  var price = form.querySelector('#price');
-  var selectHouse = form.querySelector('#type');
-  var checkIn = form.querySelector('#timein');
-  var checkOut = form.querySelector('#timeout');
-  var rooms = form.querySelector('#room_number');
-  var guests = form.querySelector('#capacity');
-  var title = form.querySelector('#title');
-  var resetButton = form.querySelector('.form__reset');
-  var submitButton = form.querySelector('.form__submit');
-  var arrInputError = [];
 
   /**
    * Fill array of ads
@@ -154,8 +126,8 @@
    * @return {Object}
    */
   var generateAd = function (adIndex) {
-    var locX = Math.floor(getRandomNumber(adsParams.LOCATION_RANGE.MIN_X, adsParams.LOCATION_RANGE.MAX_X));
-    var locY = Math.floor(getRandomNumber(adsParams.LOCATION_RANGE.MIN_Y, adsParams.LOCATION_RANGE.MAX_Y));
+    var locX = Math.floor(window.utils.getRandomNumber(adsParams.LOCATION_RANGE.MIN_X, adsParams.LOCATION_RANGE.MAX_X));
+    var locY = Math.floor(window.utils.getRandomNumber(adsParams.LOCATION_RANGE.MIN_Y, adsParams.LOCATION_RANGE.MAX_Y));
     var objAds = {
       author: {
         avatar: getAvatar(adIndex + 1)
@@ -164,15 +136,15 @@
       offer: {
         title: adsParams.TITLES[adIndex],
         address: locX + ', ' + locY,
-        price: Math.floor(getRandomNumber(adsParams.PRICE_RANGE.MIN, adsParams.PRICE_RANGE.MAX)),
+        price: Math.floor(window.utils.getRandomNumber(adsParams.PRICE_RANGE.MIN, adsParams.PRICE_RANGE.MAX)),
         type: getHouseType(adsParams.TITLES[adIndex]),
-        rooms: Math.floor(getRandomNumber(adsParams.ROOMS_RANGE.MIN, adsParams.ROOMS_RANGE.MAX)),
-        guests: Math.floor(getRandomNumber(1, adsParams.MAX_GUESTS)),
-        checkin: adsParams.CHECK_ITEMS[getRandomNumber(0, adsParams.CHECK_ITEMS.length - 1).toFixed()],
-        checkout: adsParams.CHECK_ITEMS[getRandomNumber(0, adsParams.CHECK_ITEMS.length - 1).toFixed()],
-        features: getRandomArray(adsParams.FEATURES_ITEMS, Math.floor(getRandomNumber(1, adsParams.FEATURES_ITEMS.length))),
+        rooms: Math.floor(window.utils.getRandomNumber(adsParams.ROOMS_RANGE.MIN, adsParams.ROOMS_RANGE.MAX)),
+        guests: Math.floor(window.utils.getRandomNumber(1, adsParams.MAX_GUESTS)),
+        checkin: adsParams.CHECK_ITEMS[window.utils.getRandomNumber(0, adsParams.CHECK_ITEMS.length - 1).toFixed()],
+        checkout: adsParams.CHECK_ITEMS[window.utils.getRandomNumber(0, adsParams.CHECK_ITEMS.length - 1).toFixed()],
+        features: window.utils.getRandomArray(adsParams.FEATURES_ITEMS, Math.floor(window.utils.getRandomNumber(1, adsParams.FEATURES_ITEMS.length))),
         description: '',
-        photos: getShuffleArray(adsParams.PHOTOS_ITEMS)
+        photos: window.utils.getShuffleArray(adsParams.PHOTOS_ITEMS)
       },
 
       location: {
@@ -211,50 +183,6 @@
     return adsParams.TYPES[indexTitle];
   };
 
-  /**
-   * Get new array with unique elements from old.
-   * Elements order in new array is random.
-   * @param {Array} arr
-   * @param {number} length
-   * @return {Array}
-   */
-  var getRandomArray = function (arr, length) {
-    var newArr = [];
-    var rand;
-    while (length > newArr.length) {
-      var randomIndex = Math.floor(Math.random() * arr.length);
-      rand = arr[randomIndex];
-      if (~newArr.indexOf(rand)) {
-        continue;
-      } else {
-        newArr.push(rand);
-      }
-    }
-
-    return newArr;
-  };
-
-  /**
-   * Shuffling array using algorithm the Fisher-Yates
-   * @param {Array} array
-   * @return {Array}
-   */
-  var getShuffleArray = function (array) {
-    var currentIndex = array.length;
-    var temporaryValue;
-    var randomIndex;
-
-    while (currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  };
   /**
    * Creating a random location for pin
    * @param {Object} advert
@@ -374,16 +302,6 @@
     return li;
   };
 
-  /**
-   * Return random number between the interval min (inclusive) - max (inclusive)
-   * @param {number} min - number opacity
-   * @param {number} max - number opacity
-   * @return {number} - random number
-   */
-  var getRandomNumber = function (min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  };
-
   var adverts = generateAdArray(AD_COUNT);
   var fragment = createPins(adverts);
   var advertCard;
@@ -446,122 +364,6 @@
     }
   };
 
-  /**
-   * Get min value for special selected house
-   */
-  var priceChangeHandler = function () {
-    price.min = MinHousePrices[selectHouse.value];
-    price.placeholder = price.min;
-  };
-
-  /**
-   * Get customized error for a special incorrect input field 'amount per night'
-   */
-  var validatePrice = function () {
-    if (price.validity.rangeUnderflow) {
-      price.setCustomValidity('Цена не может быть ниже ' + price.min + ' рублей!');
-    } else if (price.validity.rangeOverflow) {
-      price.setCustomValidity('Цена не должна быть выше 1 000 000 рублей!');
-    } else if (price.validity.valueMissing) {
-      price.setCustomValidity('Вы забыли указать цену!');
-    } else {
-      price.setCustomValidity('');
-    }
-  };
-
-  /**
-   * Get customized error for a special incorrect input field 'title'
-   */
-  var validateTitle = function () {
-    if (title.validity.valueMissing) {
-      title.setCustomValidity('Вы забыли про заголовок!');
-    } else if (title.validity.tooShort) {
-      title.setCustomValidity('Заголовок должен содержать не менее 30 символов. Сейчас: ' + title.value.length);
-    } else if (title.validity.tooLong) {
-      title.setCustomValidity('Длина заголовка не должна превышать 100 символов. Сейчас: ' + title.value.length);
-    } else {
-      title.setCustomValidity('');
-    }
-  };
-
-  /**
-   * Get customized error for a empty input field 'address'
-   * @param {Object} evt
-   */
-  var validateAddress = function (evt) {
-    if (addressField.value === '') {
-      addressField.style.borderColor = 'red';
-      evt.preventDefault();
-    }
-  };
-
-  /**
-   * Synchronizing fields
-   * @param {Node} firstNode
-   * @param {Node} secondNode
-   */
-  var syncInputValues = function (firstNode, secondNode) {
-    secondNode.value = firstNode.value;
-  };
-
-  /**
-   * Change and disabled optional guests fields
-   */
-  var roomsChangeHandler = function () {
-    var select = roomsGuestDependencies[rooms.value];
-    guests.value = (rooms.value === '100') ? '0' : rooms.value;
-
-    [].slice.call(guests.options).forEach(function (option) {
-      option.disabled = !select.includes(option.value);
-    });
-  };
-
-  /**
-   * Binding initialize states of fields
-   */
-  var initializeForm = function () {
-    priceChangeHandler();
-    roomsChangeHandler();
-    fillAddressField();
-    arrInputError.forEach(function (input) {
-      input.style.borderColor = '';
-    });
-  };
-
-  /**
-   * Binding listeners in one function
-   */
-  var subscribeToFormEvents = function () {
-    selectHouse.addEventListener('change', priceChangeHandler);
-
-    checkIn.addEventListener('change', function () {
-      syncInputValues(checkIn, checkOut);
-    });
-
-    checkOut.addEventListener('change', function () {
-      syncInputValues(checkOut, checkIn);
-    });
-
-    rooms.addEventListener('change', roomsChangeHandler);
-
-    submitButton.addEventListener('click', function () {
-      arrInputError.forEach(function (input) {
-        input.style.borderColor = '';
-        input.setCustomValidity('');
-      });
-    });
-
-    form.addEventListener('invalid', function (evt) {
-      validatePrice();
-      validateTitle();
-      validateAddress(evt);
-      evt.target.style.borderColor = 'red';
-      arrInputError.push(evt.target);
-    }, true);
-  };
-
-  fillAddressField();
-
   noticeFields.forEach(function (field) {
     setDisableField(field, true);
   });
@@ -569,16 +371,14 @@
   var pinMainMouseupHandler = function () {
     enableMap();
     fillAddressField();
-    initializeForm();
-    subscribeToFormEvents();
+    window.form.initializeForm();
+    window.form.subscribeToFormEvents();
     pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
 
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
 
-  resetButton.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    form.reset();
-    initializeForm();
-  });
+  window.map = {
+    fillAddressField: fillAddressField
+  };
 })();
