@@ -56,9 +56,19 @@
     return array;
   };
 
+  /**
+   * Enable or disable fields for users
+   * @param {Node} field
+   * @param {boolean} isDisabled
+   */
+  var setDisableField = function (field, isDisabled) {
+    field.disabled = isDisabled;
+  };
+
   window.utils = {
     getRandomNumber: getRandomNumber,
     getRandomArray: getRandomArray,
-    getShuffleArray: getShuffleArray
+    getShuffleArray: getShuffleArray,
+    setDisableField: setDisableField
   };
 })();

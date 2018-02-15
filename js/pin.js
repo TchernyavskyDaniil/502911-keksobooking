@@ -39,21 +39,6 @@
   };
 
   /**
-   * Return array of fragment pins
-   * @param {Array} advertsArray
-   * @return {Array}
-   */
-  var createPins = function (advertsArray) {
-    var fragment = document.createDocumentFragment();
-
-    advertsArray.forEach(function (item) {
-      fragment.appendChild(renderPin(item));
-    });
-
-    return fragment;
-  };
-
-  /**
    * Render pop-up a certain pressed pin
    * @param {Object} evt
    * @param {Object} advert
@@ -66,6 +51,6 @@
   };
 
   window.pin = {
-    create: createPins
+    render: renderPin
   };
 })();

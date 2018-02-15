@@ -14,8 +14,23 @@
   var noticeFields = form.querySelectorAll('.form__element');
   var pinMain = mapPins.querySelector('.map__pin--main');
 
+  /**
+   * Return array of fragment pins
+   * @param {Array} advertsArray
+   * @return {Array}
+   */
+  var createPins = function (advertsArray) {
+    var fragment = document.createDocumentFragment();
+
+    advertsArray.forEach(function (item) {
+      fragment.appendChild(window.pin.render(item));
+    });
+
+    return fragment;
+  };
+
   var adverts = window.data.generateAdArray(AD_COUNT);
-  var fragment = window.pin.create(adverts);
+  var fragment = createPins(adverts);
 
   /**
    * Get active map and form
@@ -27,7 +42,7 @@
     form.classList.remove('notice__form--disabled');
 
     noticeFields.forEach(function (field) {
-      window.form.setDisableField(field, false);
+      window.utils.setDisableField(field, false);
     });
   };
 

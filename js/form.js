@@ -51,17 +51,8 @@
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
   };
 
-  /**
-   * Enable or disable fields for users
-   * @param {Node} field
-   * @param {boolean} isDisabled
-   */
-  var setDisableField = function (field, isDisabled) {
-    field.disabled = isDisabled;
-  };
-
   noticeFields.forEach(function (field) {
-    setDisableField(field, true);
+    window.utils.setDisableField(field, true);
   });
 
   /**
@@ -186,8 +177,4 @@
     form.reset();
     initializeForm();
   });
-
-  window.form = {
-    setDisableField: setDisableField
-  };
 })();
