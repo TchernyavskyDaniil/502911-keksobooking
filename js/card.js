@@ -28,6 +28,7 @@
     ESC: 27
   };
 
+  var advertCard;
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
   var map = document.querySelector('.map');
 
@@ -101,22 +102,14 @@
     return li;
   };
 
-  var advertCard;
-
   /**
-   * Render pop-up a certain pressed pin
-   * @param {Object} evt
+   * Create a card on map
    * @param {Object} advert
    */
-  var pinClickHandler = function (evt, advert) {
-    closeAdvertCard();
-
-    advertCard = window.card.createAdvertCard(advert);
+  var createCard = function (advert) {
+    advertCard = createAdvertCard(advert);
     map.appendChild(advertCard);
-
-    document.addEventListener('keydown', keydownEscapeHandler);
   };
-
 
   /**
    * Check for a specific (ESC) button click
@@ -135,12 +128,14 @@
     if (advertCard) {
       map.removeChild(advertCard);
       advertCard = null;
+
       document.removeEventListener('keydown', keydownEscapeHandler);
     }
   };
 
   window.card = {
-    createAdvertCard: createAdvertCard,
-    pinClickHandler: pinClickHandler
+    closeAdvertCard: closeAdvertCard,
+    keydownEscapeHandler: keydownEscapeHandler,
+    createCard: createCard
   };
 })();

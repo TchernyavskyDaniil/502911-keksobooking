@@ -178,6 +178,8 @@
   };
 
   fillAddressField();
+  initializeForm();
+  subscribeToFormEvents();
 
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
@@ -186,9 +188,6 @@
   });
 
   window.form = {
-    fillAddressField: fillAddressField,
-    subscribeToFormEvents: subscribeToFormEvents,
-    initializeForm: initializeForm,
     setDisableField: setDisableField
   };
 })();

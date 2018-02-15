@@ -32,7 +32,7 @@
     pin.appendChild(img);
 
     pin.addEventListener('click', function (evt) {
-      window.card.pinClickHandler(evt, advert);
+      pinClickHandler(evt, advert);
     });
 
     return pin;
@@ -53,7 +53,19 @@
     return fragment;
   };
 
+  /**
+   * Render pop-up a certain pressed pin
+   * @param {Object} evt
+   * @param {Object} advert
+   */
+  var pinClickHandler = function (evt, advert) {
+    window.card.closeAdvertCard();
+    window.card.createCard(advert);
+
+    document.addEventListener('keydown', window.card.keydownEscapeHandler);
+  };
+
   window.pin = {
-    createPins: createPins
+    create: createPins
   };
 })();
