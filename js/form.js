@@ -19,8 +19,19 @@
     100: ['0']
   };
 
+  /**
+   * Description of parameters of the main pin
+   * @enum {number} PinParams
+   */
+  var PinParams = {
+    WIDTH: 40,
+    HEIGHT: 44,
+    ARROW_HEIGHT: 22
+  };
+
   var form = document.querySelector('.notice__form');
   var addressField = form.querySelector('#address');
+  var noticeFields = form.querySelectorAll('.form__element');
   var price = form.querySelector('#price');
   var selectHouse = form.querySelector('#type');
   var checkIn = form.querySelector('#timein');
@@ -28,9 +39,30 @@
   var rooms = form.querySelector('#room_number');
   var guests = form.querySelector('#capacity');
   var title = form.querySelector('#title');
+  var pinMain = document.querySelector('.map__pin--main');
   var resetButton = form.querySelector('.form__reset');
   var submitButton = form.querySelector('.form__submit');
   var arrInputError = [];
+
+  var fillAddressField = function () {
+    var buttonOffsetX = 'X: ' + (pinMain.offsetLeft - PinParams.WIDTH * 0.5);
+    var buttonOffsetY = 'Y: ' + (pinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
+
+    addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
+  };
+
+  /**
+   * Enable or disable fields for users
+   * @param {Node} field
+   * @param {boolean} isDisabled
+   */
+  var setDisableField = function (field, isDisabled) {
+    field.disabled = isDisabled;
+  };
+
+  noticeFields.forEach(function (field) {
+    setDisableField(field, true);
+  });
 
   /**
    * Get min value for special selected house
@@ -108,7 +140,7 @@
   var initializeForm = function () {
     priceChangeHandler();
     roomsChangeHandler();
-    window.map.fillAddressField();
+    fillAddressField();
     arrInputError.forEach(function (input) {
       input.style.borderColor = '';
     });
@@ -145,7 +177,7 @@
     }, true);
   };
 
-  window.map.fillAddressField();
+  fillAddressField();
 
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
@@ -154,7 +186,9 @@
   });
 
   window.form = {
+    fillAddressField: fillAddressField,
     subscribeToFormEvents: subscribeToFormEvents,
-    initializeForm: initializeForm
+    initializeForm: initializeForm,
+    setDisableField: setDisableField
   };
 })();
