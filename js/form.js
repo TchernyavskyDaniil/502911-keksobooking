@@ -12,6 +12,10 @@
     'palace': 10000
   };
 
+  /**
+   * Rooms for a certain number of guests
+   * @type {string}
+   */
   var roomsGuestDependencies = {
     1: ['1'],
     2: ['1', '2'],
@@ -33,6 +37,7 @@
   var addressField = form.querySelector('#address');
   var noticeFields = form.querySelectorAll('.form__element');
   var price = form.querySelector('#price');
+  var map = document.querySelector('.map');
   var selectHouse = form.querySelector('#type');
   var checkIn = form.querySelector('#timein');
   var checkOut = form.querySelector('#timeout');
@@ -131,10 +136,28 @@
   var initializeForm = function () {
     priceChangeHandler();
     roomsChangeHandler();
-    fillAddressField();
+
     arrInputError.forEach(function (input) {
       input.style.borderColor = '';
     });
+
+    resetButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      form.reset();
+      initializeForm();
+
+      map.classList.add('map--faded');
+      form.classList.add('notice__form--disabled');
+
+      noticeFields.forEach(function (field) {
+        window.utils.setDisableField(field, true);
+      });
+
+      window.card.close();
+    });
+
+    fillAddressField();
+    subscribeToFormEvents();
   };
 
   /**
@@ -143,6 +166,14 @@
   var subscribeToFormEvents = function () {
     selectHouse.addEventListener('change', priceChangeHandler);
 
+    rooms.addEventListener('change', roomsChangeHandler);
+
+    subToSycnEvents();
+    subToSubmitEvent();
+    subToInvalidEvent();
+  };
+
+  var subToSycnEvents = function () {
     checkIn.addEventListener('change', function () {
       syncInputValues(checkIn, checkOut);
     });
@@ -150,15 +181,18 @@
     checkOut.addEventListener('change', function () {
       syncInputValues(checkOut, checkIn);
     });
+  };
 
-    rooms.addEventListener('change', roomsChangeHandler);
-
+  var subToSubmitEvent = function () {
     submitButton.addEventListener('click', function () {
       arrInputError.forEach(function (input) {
         input.style.borderColor = '';
         input.setCustomValidity('');
       });
     });
+  };
+
+  var subToInvalidEvent = function () {
     form.addEventListener('invalid', function (evt) {
       validatePrice();
       validateTitle();
@@ -168,13 +202,7 @@
     }, true);
   };
 
-  fillAddressField();
-  initializeForm();
-  subscribeToFormEvents();
-
-  resetButton.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    form.reset();
-    initializeForm();
-  });
+  window.form = {
+    initialize: initializeForm
+  };
 })();

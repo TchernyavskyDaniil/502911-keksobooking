@@ -107,8 +107,12 @@
    * @param {Object} advert
    */
   var createCard = function (advert) {
+    closeAdvertCard();
+
     advertCard = createAdvertCard(advert);
     map.appendChild(advertCard);
+
+    document.addEventListener('keydown', keydownEscapeHandler);
   };
 
   /**
@@ -134,8 +138,7 @@
   };
 
   window.card = {
-    closeAdvertCard: closeAdvertCard,
-    keydownEscapeHandler: keydownEscapeHandler,
-    createCard: createCard
+    create: createCard,
+    close: closeAdvertCard
   };
 })();

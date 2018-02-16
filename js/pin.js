@@ -31,23 +31,11 @@
 
     pin.appendChild(img);
 
-    pin.addEventListener('click', function (evt) {
-      pinClickHandler(evt, advert);
+    pin.addEventListener('click', function () {
+      window.card.create(advert);
     });
 
     return pin;
-  };
-
-  /**
-   * Render pop-up a certain pressed pin
-   * @param {Object} evt
-   * @param {Object} advert
-   */
-  var pinClickHandler = function (evt, advert) {
-    window.card.closeAdvertCard();
-    window.card.createCard(advert);
-
-    document.addEventListener('keydown', window.card.keydownEscapeHandler);
   };
 
   window.pin = {

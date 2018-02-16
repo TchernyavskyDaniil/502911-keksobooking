@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   /**
    * How much adverts we have
    * @const {number}
@@ -44,6 +43,8 @@
     noticeFields.forEach(function (field) {
       window.utils.setDisableField(field, false);
     });
+
+    window.form.initialize();
   };
 
   var pinMainMouseupHandler = function () {
