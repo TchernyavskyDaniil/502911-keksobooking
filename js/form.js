@@ -36,9 +36,9 @@
   var submitButton = form.querySelector('.form__submit');
   var arrInputError = [];
 
-  var fillAddressField = function (map) {
-    var buttonOffsetX = 'X: ' + (map.offsetLeft - map.pinParams.WIDTH * 0.5);
-    var buttonOffsetY = 'Y: ' + (map.offsetTop + map.pinParams.HEIGHT * 0.5 + map.pinParams.ARROW_HEIGHT);
+  var fillAddressField = function (offsetX, offsetY) {
+    var buttonOffsetX = 'X: ' + (offsetX);
+    var buttonOffsetY = 'Y: ' + (offsetY);
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
   };
@@ -150,7 +150,6 @@
       input.style.borderColor = '';
     });
 
-    fillAddressField(window.map);
     subscribeToFormEvents();
   };
 
@@ -175,5 +174,8 @@
     submitButton.addEventListener('click', submitButtonClickHandler);
   };
 
-  window.initialize = initializeForm;
+  window.form = {
+    initialize: initializeForm,
+    fill: fillAddressField
+  };
 })();

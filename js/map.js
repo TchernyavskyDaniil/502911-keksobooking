@@ -25,6 +25,16 @@
   var resetButton = form.querySelector('.form__reset');
   var pins = [];
 
+  var getX = function () {
+    var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
+    return offsetX;
+  };
+
+  var getY = function () {
+    var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
+    return offsetY;
+  };
+
   /**
    * Fill array of ads
    * @return {Array}
@@ -75,12 +85,13 @@
 
     map.classList.remove('map--faded');
     form.classList.remove('notice__form--disabled');
+    window.form.fill(getX(), getY());
 
     noticeFields.forEach(function (field) {
       window.utils.setDisableField(field, false);
     });
 
-    window.initialize();
+    window.form.initialize();
 
     pins.forEach(function (pin) {
       mapPins.appendChild(pin);
@@ -99,7 +110,8 @@
   var resetButtonClickHandler = function (evt) {
     evt.preventDefault();
     form.reset();
-    window.initialize();
+    window.form.initialize();
+    window.form.fill(getX(), getY());
 
     map.classList.add('map--faded');
     form.classList.add('notice__form--disabled');
@@ -118,10 +130,4 @@
   resetButton.addEventListener('click', resetButtonClickHandler);
 
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
-
-  window.map = {
-    pinParams: MainPinParams,
-    offsetLeft: pinMain.offsetLeft,
-    offsetTop: pinMain.offsetTop
-  };
 })();
