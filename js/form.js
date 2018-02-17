@@ -153,8 +153,6 @@
       input.style.borderColor = '';
     });
 
-    resetButton.addEventListener('click', window.map.reset);
-
     fillAddressField(window.map.getX(), window.map.getY());
     subscribeToFormEvents();
   };

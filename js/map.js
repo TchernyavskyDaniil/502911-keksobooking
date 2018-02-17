@@ -125,11 +125,12 @@
     resetButton.removeEventListener('click', resetButtonClickHandler);
   };
 
+  resetButton.addEventListener('click', resetButtonClickHandler);
+
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
 
   window.map = {
     getX: getOffsetX,
-    getY: getOffsetY,
-    reset: resetButtonClickHandler
+    getY: getOffsetY
   };
 })();
