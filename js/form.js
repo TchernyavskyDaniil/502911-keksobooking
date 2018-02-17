@@ -27,15 +27,12 @@
   var addressField = form.querySelector('#address');
   var noticeFields = form.querySelectorAll('.form__element');
   var price = form.querySelector('#price');
-  // var map = document.querySelector('.map');
   var selectHouse = form.querySelector('#type');
   var checkIn = form.querySelector('#timein');
   var checkOut = form.querySelector('#timeout');
   var rooms = form.querySelector('#room_number');
   var guests = form.querySelector('#capacity');
   var title = form.querySelector('#title');
-  // var pinMain = document.querySelector('.map__pin--main');
-  var resetButton = form.querySelector('.form__reset');
   var submitButton = form.querySelector('.form__submit');
   var arrInputError = [];
 
