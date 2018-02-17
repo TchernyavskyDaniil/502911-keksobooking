@@ -34,6 +34,7 @@
   var guests = form.querySelector('#capacity');
   var title = form.querySelector('#title');
   var submitButton = form.querySelector('.form__submit');
+  var resetButton = form.querySelector('.form__reset');
   var arrInputError = [];
 
   var fillAddressField = function (X, Y) {
@@ -140,6 +141,25 @@
   };
 
   /**
+   * Clear all map and form settings
+   * @param {Object} evt
+   */
+  var resetButtonClickHandler = function (evt) {
+    evt.preventDefault();
+    form.reset();
+    initializeForm();
+
+    window.reset();
+
+    noticeFields.forEach(function (field) {
+      window.utils.setDisableField(field, true);
+    });
+
+    window.card.close();
+    resetButton.removeEventListener('click', resetButtonClickHandler);
+  };
+
+  /**
    * Binding initialize states of fields
    */
   var initializeForm = function () {
@@ -150,6 +170,7 @@
       input.style.borderColor = '';
     });
 
+    resetButton.addEventListener('click', resetButtonClickHandler);
     subscribeToFormEvents();
   };
 

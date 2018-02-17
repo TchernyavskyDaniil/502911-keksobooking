@@ -22,7 +22,6 @@
   var form = document.querySelector('.notice__form');
   var noticeFields = form.querySelectorAll('.form__element');
   var pinMain = mapPins.querySelector('.map__pin--main');
-  var resetButton = form.querySelector('.form__reset');
   var pins = [];
 
   var getX = function () {
@@ -75,6 +74,16 @@
     });
   };
 
+  /**
+   * Reset map to original state
+   */
+  var resetMap = function () {
+    deletePins();
+    map.classList.add('map--faded');
+    form.classList.add('notice__form--disabled');
+    pinMain.addEventListener('mouseup', pinMainMouseupHandler);
+  };
+
   var fragment = createPins(generateAdArray());
 
   /**
@@ -103,31 +112,7 @@
     pinMain.removeEventListener('mouseup', pinMainMouseupHandler);
   };
 
-  /**
-   * Clear all map and form settings
-   * @param {Object} evt
-   */
-  var resetButtonClickHandler = function (evt) {
-    evt.preventDefault();
-    form.reset();
-    window.form.initialize();
-    window.form.fillAddress(getX(), getY());
-
-    map.classList.add('map--faded');
-    form.classList.add('notice__form--disabled');
-
-    noticeFields.forEach(function (field) {
-      window.utils.setDisableField(field, true);
-    });
-
-    window.card.close();
-    deletePins();
-
-    pinMain.addEventListener('mouseup', pinMainMouseupHandler);
-    resetButton.removeEventListener('click', resetButtonClickHandler);
-  };
-
-  resetButton.addEventListener('click', resetButtonClickHandler);
-
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
+
+  window.reset = resetMap;
 })();
