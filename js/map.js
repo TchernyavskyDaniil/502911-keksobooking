@@ -78,6 +78,7 @@
    * Reset map to original state
    */
   var resetMap = function () {
+    window.form.fillAddress(getX(), getY());
     deletePins();
     map.classList.add('map--faded');
     form.classList.add('notice__form--disabled');
