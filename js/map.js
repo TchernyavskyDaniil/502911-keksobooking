@@ -85,7 +85,7 @@
 
     map.classList.remove('map--faded');
     form.classList.remove('notice__form--disabled');
-    window.form.fill(getX(), getY());
+    window.form.fillAddress(getX(), getY());
 
     noticeFields.forEach(function (field) {
       window.utils.setDisableField(field, false);
@@ -111,7 +111,7 @@
     evt.preventDefault();
     form.reset();
     window.form.initialize();
-    window.form.fill(getX(), getY());
+    window.form.fillAddress(getX(), getY());
 
     map.classList.add('map--faded');
     form.classList.add('notice__form--disabled');

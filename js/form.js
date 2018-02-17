@@ -36,9 +36,9 @@
   var submitButton = form.querySelector('.form__submit');
   var arrInputError = [];
 
-  var fillAddressField = function (offsetX, offsetY) {
-    var buttonOffsetX = 'X: ' + (offsetX);
-    var buttonOffsetY = 'Y: ' + (offsetY);
+  var fillAddressField = function (X, Y) {
+    var buttonOffsetX = 'X: ' + X;
+    var buttonOffsetY = 'Y: ' + Y;
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
   };
@@ -176,6 +176,6 @@
 
   window.form = {
     initialize: initializeForm,
-    fill: fillAddressField
+    fillAddress: fillAddressField
   };
 })();
