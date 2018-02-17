@@ -27,17 +27,16 @@
   var addressField = form.querySelector('#address');
   var noticeFields = form.querySelectorAll('.form__element');
   var price = form.querySelector('#price');
-  var map = document.querySelector('.map');
+  // var map = document.querySelector('.map');
   var selectHouse = form.querySelector('#type');
   var checkIn = form.querySelector('#timein');
   var checkOut = form.querySelector('#timeout');
   var rooms = form.querySelector('#room_number');
   var guests = form.querySelector('#capacity');
   var title = form.querySelector('#title');
-  var pinMain = document.querySelector('.map__pin--main');
+  // var pinMain = document.querySelector('.map__pin--main');
   var resetButton = form.querySelector('.form__reset');
   var submitButton = form.querySelector('.form__submit');
-  var mapPins = map.querySelector('.map__pins');
   var arrInputError = [];
 
   var fillAddressField = function (offsetX, offsetY) {
@@ -154,28 +153,9 @@
       input.style.borderColor = '';
     });
 
-    resetButton.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      form.reset();
-      initializeForm();
+    resetButton.addEventListener('click', window.map.reset);
 
-      map.classList.add('map--faded');
-      form.classList.add('notice__form--disabled');
-
-      noticeFields.forEach(function (field) {
-        window.utils.setDisableField(field, true);
-      });
-
-      window.card.close();
-
-      window.map.pins.forEach(function (pin) {
-        mapPins.removeChild(pin);
-      });
-
-      pinMain.addEventListener('mouseup', window.map.pin);
-    });
-
-    fillAddressField(window.pin.x, window.pin.y);
+    fillAddressField(window.map.getX(), window.map.getY());
     subscribeToFormEvents();
   };
 
