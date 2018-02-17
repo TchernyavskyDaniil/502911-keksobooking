@@ -12,6 +12,21 @@
   };
 
   /**
+   * Description of parameters of the main pin
+   * @enum {number} PinParams
+   */
+  var PinParams = {
+    WIDTH: 40,
+    HEIGHT: 44,
+    ARROW_HEIGHT: 22
+  };
+
+  var pinMain = document.querySelector('.map__pin--main');
+
+  var offsetX = pinMain.offsetLeft - PinParams.WIDTH * 0.5;
+  var offsetY = pinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT;
+
+  /**
    * Creating a random location for pin
    * @param {Object} advert
    * @return {Node}
@@ -39,6 +54,8 @@
   };
 
   window.pin = {
-    render: renderPin
+    render: renderPin,
+    x: offsetX,
+    y: offsetY
   };
 })();

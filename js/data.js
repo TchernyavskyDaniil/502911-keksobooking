@@ -64,6 +64,7 @@
       adArr.push(generateAd(i));
     }
 
+    console.log(adArr);
     return adArr;
   };
 

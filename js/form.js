@@ -23,16 +23,6 @@
     100: ['0']
   };
 
-  /**
-   * Description of parameters of the main pin
-   * @enum {number} PinParams
-   */
-  var PinParams = {
-    WIDTH: 40,
-    HEIGHT: 44,
-    ARROW_HEIGHT: 22
-  };
-
   var form = document.querySelector('.notice__form');
   var addressField = form.querySelector('#address');
   var noticeFields = form.querySelectorAll('.form__element');
@@ -47,11 +37,12 @@
   var pinMain = document.querySelector('.map__pin--main');
   var resetButton = form.querySelector('.form__reset');
   var submitButton = form.querySelector('.form__submit');
+  var mapPins = map.querySelector('.map__pins');
   var arrInputError = [];
 
-  var fillAddressField = function () {
-    var buttonOffsetX = 'X: ' + (pinMain.offsetLeft - PinParams.WIDTH * 0.5);
-    var buttonOffsetY = 'Y: ' + (pinMain.offsetTop + PinParams.HEIGHT * 0.5 + PinParams.ARROW_HEIGHT);
+  var fillAddressField = function (offsetX, offsetY) {
+    var buttonOffsetX = 'X: ' + (offsetX);
+    var buttonOffsetY = 'Y: ' + (offsetY);
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
   };
@@ -154,9 +145,15 @@
       });
 
       window.card.close();
+
+      window.map.pins.forEach(function (pin) {
+        mapPins.removeChild(pin);
+      });
+
+      pinMain.addEventListener('mouseup', window.map.pin);
     });
 
-    fillAddressField();
+    fillAddressField(window.pin.x, window.pin.y);
     subscribeToFormEvents();
   };
 

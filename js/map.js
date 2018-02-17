@@ -12,6 +12,7 @@
   var form = document.querySelector('.notice__form');
   var noticeFields = form.querySelectorAll('.form__element');
   var pinMain = mapPins.querySelector('.map__pin--main');
+  var pins = [];
 
   /**
    * Return array of fragment pins
@@ -22,7 +23,9 @@
     var fragment = document.createDocumentFragment();
 
     advertsArray.forEach(function (item) {
-      fragment.appendChild(window.pin.render(item));
+      var node = window.pin.render(item);
+      fragment.appendChild(node);
+      pins.push(node);
     });
 
     return fragment;
@@ -45,6 +48,10 @@
     });
 
     window.form.initialize();
+
+    pins.forEach(function (pin) {
+      mapPins.appendChild(pin);
+    });
   };
 
   var pinMainMouseupHandler = function () {
@@ -53,4 +60,9 @@
   };
 
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
+
+  window.map = {
+    pins: pins,
+    pin: pinMainMouseupHandler
+  };
 })();
