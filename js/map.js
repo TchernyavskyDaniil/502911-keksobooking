@@ -25,16 +25,6 @@
   var resetButton = form.querySelector('.form__reset');
   var pins = [];
 
-  var getOffsetX = function () {
-    var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
-    return offsetX;
-  };
-
-  var getOffsetY = function () {
-    var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
-    return offsetY;
-  };
-
   /**
    * Fill array of ads
    * @return {Array}
@@ -90,7 +80,7 @@
       window.utils.setDisableField(field, false);
     });
 
-    window.form.initialize();
+    window.initialize();
 
     pins.forEach(function (pin) {
       mapPins.appendChild(pin);
@@ -109,7 +99,7 @@
   var resetButtonClickHandler = function (evt) {
     evt.preventDefault();
     form.reset();
-    window.form.initialize();
+    window.initialize();
 
     map.classList.add('map--faded');
     form.classList.add('notice__form--disabled');
@@ -130,7 +120,8 @@
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
 
   window.map = {
-    getX: getOffsetX,
-    getY: getOffsetY
+    pinParams: MainPinParams,
+    offsetLeft: pinMain.offsetLeft,
+    offsetTop: pinMain.offsetTop
   };
 })();
