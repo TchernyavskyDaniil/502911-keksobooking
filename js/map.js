@@ -15,6 +15,20 @@
   var pins = [];
 
   /**
+   * Fill array of ads
+   * @return {Array}
+   */
+  var generateAdArray = function () {
+    var adverts = [];
+
+    for (var i = 0; i < AD_COUNT; i++) {
+      adverts.push(window.data.generate(i));
+    }
+
+    return adverts;
+  };
+
+  /**
    * Return array of fragment pins
    * @param {Array} advertsArray
    * @return {Array}
@@ -31,8 +45,7 @@
     return fragment;
   };
 
-  var adverts = window.data.generateAdArray(AD_COUNT);
-  var fragment = createPins(adverts);
+  var fragment = createPins(generateAdArray());
 
   /**
    * Get active map and form

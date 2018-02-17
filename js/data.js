@@ -54,21 +54,6 @@
   };
 
   /**
-   * Fill array of ads
-   * @param {number} length
-   * @return {Array}
-   */
-  var generateAdArray = function (length) {
-    var adArr = [];
-    for (var i = 0; i < length; i++) {
-      adArr.push(generateAd(i));
-    }
-
-    console.log(adArr);
-    return adArr;
-  };
-
-  /**
    * Create ad object
    * @param {number} adIndex
    * @return {Object}
@@ -132,6 +117,6 @@
   };
 
   window.data = {
-    generateAdArray: generateAdArray
+    generate: generateAd
   };
 })();

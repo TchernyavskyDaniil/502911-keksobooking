@@ -101,6 +101,28 @@
   };
 
   /**
+   * Checking required fields for validity
+   * @param {Object} evt
+   */
+  var formInvalidHandler = function (evt) {
+    validatePrice();
+    validateTitle();
+    validateAddress(evt);
+    evt.target.style.borderColor = 'red';
+    arrInputError.push(evt.target);
+  };
+
+  /**
+   * Clear border color and custom validity fields
+   */
+  var submitButtonClickHandler = function () {
+    arrInputError.forEach(function (input) {
+      input.style.borderColor = '';
+      input.setCustomValidity('');
+    });
+  };
+
+  /**
    * Synchronizing fields
    * @param {Node} firstNode
    * @param {Node} secondNode
@@ -165,12 +187,8 @@
 
     rooms.addEventListener('change', roomsChangeHandler);
 
-    subToSycnEvents();
-    subToSubmitEvent();
-    subToInvalidEvent();
-  };
+    form.addEventListener('invalid', formInvalidHandler, true);
 
-  var subToSycnEvents = function () {
     checkIn.addEventListener('change', function () {
       syncInputValues(checkIn, checkOut);
     });
@@ -178,25 +196,8 @@
     checkOut.addEventListener('change', function () {
       syncInputValues(checkOut, checkIn);
     });
-  };
 
-  var subToSubmitEvent = function () {
-    submitButton.addEventListener('click', function () {
-      arrInputError.forEach(function (input) {
-        input.style.borderColor = '';
-        input.setCustomValidity('');
-      });
-    });
-  };
-
-  var subToInvalidEvent = function () {
-    form.addEventListener('invalid', function (evt) {
-      validatePrice();
-      validateTitle();
-      validateAddress(evt);
-      evt.target.style.borderColor = 'red';
-      arrInputError.push(evt.target);
-    }, true);
+    submitButton.addEventListener('click', submitButtonClickHandler);
   };
 
   window.form = {
