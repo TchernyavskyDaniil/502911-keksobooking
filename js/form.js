@@ -37,9 +37,9 @@
   var resetButton = form.querySelector('.form__reset');
   var arrInputError = [];
 
-  var fillAddressField = function (X, Y) {
-    var buttonOffsetX = 'X: ' + X;
-    var buttonOffsetY = 'Y: ' + Y;
+  var fillAddressField = function (x, y) {
+    var buttonOffsetX = 'X: ' + x;
+    var buttonOffsetY = 'Y: ' + y;
 
     addressField.value = buttonOffsetX + ', ' + buttonOffsetY;
   };
@@ -149,7 +149,7 @@
     form.reset();
     initializeForm();
 
-    window.reset();
+    window.resetMap();
 
     noticeFields.forEach(function (field) {
       window.utils.setDisableField(field, true);
@@ -170,7 +170,6 @@
       input.style.borderColor = '';
     });
 
-    resetButton.addEventListener('click', resetButtonClickHandler);
     subscribeToFormEvents();
   };
 
@@ -193,6 +192,8 @@
     });
 
     submitButton.addEventListener('click', submitButtonClickHandler);
+
+    resetButton.addEventListener('click', resetButtonClickHandler);
   };
 
   window.form = {

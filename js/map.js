@@ -24,15 +24,8 @@
   var pinMain = mapPins.querySelector('.map__pin--main');
   var pins = [];
 
-  var getX = function () {
-    var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
-    return offsetX;
-  };
-
-  var getY = function () {
-    var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
-    return offsetY;
-  };
+  var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
+  var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
 
   /**
    * Fill array of ads
@@ -42,7 +35,7 @@
     var adverts = [];
 
     for (var i = 0; i < AD_COUNT; i++) {
-      adverts.push(window.generate(i));
+      adverts.push(window.generateAd(i));
     }
 
     return adverts;
@@ -57,7 +50,7 @@
     var fragment = document.createDocumentFragment();
 
     advertsArray.forEach(function (item) {
-      var node = window.render(item);
+      var node = window.renderPin(item);
       fragment.appendChild(node);
       pins.push(node);
     });
@@ -78,7 +71,7 @@
    * Reset map to original state
    */
   var resetMap = function () {
-    window.form.fillAddress(getX(), getY());
+    window.form.fillAddress(offsetX, offsetY);
     deletePins();
     map.classList.add('map--faded');
     form.classList.add('notice__form--disabled');
@@ -95,7 +88,7 @@
 
     map.classList.remove('map--faded');
     form.classList.remove('notice__form--disabled');
-    window.form.fillAddress(getX(), getY());
+    window.form.fillAddress(offsetX, offsetY);
 
     noticeFields.forEach(function (field) {
       window.utils.setDisableField(field, false);
@@ -115,5 +108,5 @@
 
   pinMain.addEventListener('mouseup', pinMainMouseupHandler);
 
-  window.reset = resetMap;
+  window.resetMap = resetMap;
 })();

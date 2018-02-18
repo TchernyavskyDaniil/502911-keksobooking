@@ -116,5 +116,5 @@
     return adsParams.TYPES[indexTitle];
   };
 
-  window.generate = generateAd;
+  window.generateAd = generateAd;
 })();

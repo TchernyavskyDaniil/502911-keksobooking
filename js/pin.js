@@ -38,5 +38,5 @@
     return pin;
   };
 
-  window.render = renderPin;
+  window.renderPin = renderPin;
 })();
