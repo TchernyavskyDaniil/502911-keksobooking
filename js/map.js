@@ -24,6 +24,17 @@
   var pinMain = mapPins.querySelector('.map__pin--main');
   var pins = [];
 
+  /**
+   * Specifying map boundaries
+   * @enum {number} MapBorders
+   */
+  var MapBorders = {
+    TOP: 500 - MainPinParams.HEIGHT + MainPinParams.ARROW_HEIGHT,
+    BOTTOM: 150 - (MainPinParams.HEIGHT + MainPinParams.ARROW_HEIGHT),
+    LEFT: MainPinParams.WIDTH * 0.5,
+    RIGHT: mapPins.clientWidth - MainPinParams.WIDTH * 0.5
+  };
+
   var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
   var primaryOffsetX = pinMain.offsetLeft;
   var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
@@ -118,13 +129,34 @@
         y: startCoords.y - moveEvt.clientY
       };
 
+      var currentCoords = {
+        x: pinMain.offsetLeft - shift.x,
+        y: pinMain.offsetTop - shift.y
+      };
+
       startCoords = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
 
-      pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
-      pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
+      if (currentCoords.y > MapBorders.TOP) {
+        currentCoords.y = MapBorders.TOP + 'px';
+      }
+
+      if (currentCoords.y < MapBorders.BOTTOM) {
+        currentCoords.y = MapBorders.BOTTOM + 'px';
+      }
+
+      if (currentCoords.x < MapBorders.LEFT) {
+        currentCoords.x = MapBorders.LEFT;
+      }
+
+      if (currentCoords.x > MapBorders.RIGHT) {
+        currentCoords.x = MapBorders.RIGHT;
+      }
+
+      pinMain.style.top = (currentCoords.y) + 'px';
+      pinMain.style.left = (currentCoords.x) + 'px';
 
       offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
       offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
@@ -143,6 +175,8 @@
     document.addEventListener('mousemove', pinMainMouseMoveHandler);
     document.addEventListener('mouseup', pinMainMouseUpHandler);
   });
+
+  window.form.fillAddress(offsetX, offsetY);
 
   window.resetMap = resetMap;
 })();
