@@ -12,8 +12,8 @@
    * @enum {number} MainPinParams
    */
   var MainPinParams = {
-    WIDTH: 40,
-    HEIGHT: 44,
+    WIDTH: 64,
+    HEIGHT: 64,
     ARROW_HEIGHT: 22
   };
 
@@ -26,16 +26,16 @@
 
   /**
    * Specifying map boundaries
-   * @enum {number} MapBorders
+   * @enum {number} PinConstrains
    */
-  var MapBorders = {
-    TOP: 500 - MainPinParams.HEIGHT + MainPinParams.ARROW_HEIGHT,
-    BOTTOM: 150 - (MainPinParams.HEIGHT + MainPinParams.ARROW_HEIGHT),
-    LEFT: MainPinParams.WIDTH * 0.5,
-    RIGHT: mapPins.clientWidth - MainPinParams.WIDTH * 0.5
+  var PinConstrains = {
+    TOP: 500 - (MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT),
+    BOTTOM: 150 - (MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT),
+    LEFT: 0,
+    RIGHT: map.clientWidth
   };
 
-  var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
+  var offsetX = pinMain.offsetLeft;
   var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
 
   var primaryOffsetX = pinMain.offsetLeft;
@@ -87,7 +87,7 @@
    * Reset map to original state
    */
   var resetMap = function () {
-    window.form.fillAddress(offsetX, offsetY);
+    window.form.fillAddress(primaryOffsetX, primaryOffsetY + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT);
     pinMain.style.left = primaryOffsetX + 'px';
     pinMain.style.top = primaryOffsetY + 'px';
     deletePins();
@@ -142,26 +142,26 @@
         y: moveEvt.clientY
       };
 
-      if (currentCoords.y > MapBorders.TOP) {
-        currentCoords.y = MapBorders.TOP + 'px';
+      if (currentCoords.y > PinConstrains.TOP) {
+        currentCoords.y = PinConstrains.TOP;
       }
 
-      if (currentCoords.y < MapBorders.BOTTOM) {
-        currentCoords.y = MapBorders.BOTTOM + 'px';
+      if (currentCoords.y < PinConstrains.BOTTOM) {
+        currentCoords.y = PinConstrains.BOTTOM;
       }
 
-      if (currentCoords.x < MapBorders.LEFT) {
-        currentCoords.x = MapBorders.LEFT;
+      if (currentCoords.x < PinConstrains.LEFT) {
+        currentCoords.x = PinConstrains.LEFT;
       }
 
-      if (currentCoords.x > MapBorders.RIGHT) {
-        currentCoords.x = MapBorders.RIGHT;
+      if (currentCoords.x > PinConstrains.RIGHT) {
+        currentCoords.x = PinConstrains.RIGHT;
       }
 
       pinMain.style.top = (currentCoords.y) + 'px';
       pinMain.style.left = (currentCoords.x) + 'px';
 
-      offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
+      offsetX = pinMain.offsetLeft;
       offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
 
       window.form.fillAddress(offsetX, offsetY);
