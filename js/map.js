@@ -36,9 +36,12 @@
   };
 
   var offsetX = pinMain.offsetLeft - MainPinParams.WIDTH * 0.5;
-  var primaryOffsetX = pinMain.offsetLeft;
   var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
+
+  var primaryOffsetX = pinMain.offsetLeft;
   var primaryOffsetY = pinMain.offsetTop;
+
+  window.form.fillAddress(offsetX, offsetY);
 
   /**
    * Fill array of ads
@@ -84,7 +87,7 @@
    * Reset map to original state
    */
   var resetMap = function () {
-    window.form.fillAddress(primaryOffsetX, primaryOffsetY);
+    window.form.fillAddress(offsetX, offsetY);
     pinMain.style.left = primaryOffsetX + 'px';
     pinMain.style.top = primaryOffsetY + 'px';
     deletePins();
@@ -175,8 +178,6 @@
     document.addEventListener('mousemove', pinMainMouseMoveHandler);
     document.addEventListener('mouseup', pinMainMouseUpHandler);
   });
-
-  window.form.fillAddress(offsetX, offsetY);
 
   window.resetMap = resetMap;
 })();
