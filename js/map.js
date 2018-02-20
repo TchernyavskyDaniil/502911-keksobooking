@@ -2,13 +2,13 @@
 
 (function () {
   /**
-   * How much adverts we have
+   * Amount of adverts
    * @const {number}
    */
   var AD_COUNT = 8;
 
   /**
-   * Description of parameters of the main pin
+   * Parameters of the main pin
    * @enum {number} MainPinParams
    */
   var MainPinParams = {
@@ -24,10 +24,10 @@
   var pinMain = mapPins.querySelector('.map__pin--main');
   var pins = [];
   var mainPinHeight = MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
-  var pageActivated = true;
+  var pageActivated = false;
 
   /**
-   * Specifying map boundaries
+   * Map boundaries
    * @enum {number} PinConstrains
    */
   var PinConstrains = {
@@ -60,7 +60,7 @@
   };
 
   /**
-   * Return array of fragment pins
+   * Return fragment with pins
    * @param {Array} advertsArray
    * @return {Array}
    */
@@ -77,7 +77,7 @@
   };
 
   /**
-   * Remove array of pins from map
+   * Remove array of pins from the map
    */
   var deletePins = function () {
     pins.forEach(function (pin) {
@@ -86,10 +86,10 @@
   };
 
   /**
-   * Reset map to original state
+   * Reset map to initial state
    */
-  var resetMap = function () {
-    pageActivated = true;
+  var deactivateMap = function () {
+    pageActivated = false;
     pinMain.style.left = primaryOffsetX + 'px';
     pinMain.style.top = primaryOffsetY + 'px';
     deletePins();
@@ -103,10 +103,10 @@
   var fragment = createPins(generateAdArray());
 
   /**
-   * Get active map and form
+   * Activate the map and the form
    */
-  var enableMap = function () {
-    pageActivated = false;
+  var activateMap = function () {
+    pageActivated = true;
     mapPins.appendChild(fragment);
 
     map.classList.remove('map--faded');
@@ -179,8 +179,8 @@
     };
 
     var pinMainMouseUpHandler = function () {
-      if (pageActivated) {
-        enableMap();
+      if (!pageActivated) {
+        activateMap();
       }
       pinMain.style.cursor = 'move';
 
@@ -192,5 +192,5 @@
     document.addEventListener('mouseup', pinMainMouseUpHandler);
   });
 
-  window.resetMap = resetMap;
+  window.deactivateMap = deactivateMap;
 })();

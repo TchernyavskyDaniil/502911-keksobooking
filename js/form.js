@@ -149,7 +149,7 @@
     form.reset();
     initializeForm();
 
-    window.resetMap();
+    window.deactivateMap();
 
     noticeFields.forEach(function (field) {
       window.utils.setDisableField(field, true);
