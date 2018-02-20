@@ -14,7 +14,7 @@
   var MainPinParams = {
     WIDTH: 64,
     HEIGHT: 64,
-    ARROW_HEIGHT: 16
+    ARROW_HEIGHT: 17
   };
 
   var map = document.querySelector('.map');
