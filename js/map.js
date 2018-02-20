@@ -30,8 +30,8 @@
    * @enum {number} PinConstrains
    */
   var PinConstrains = {
-    TOP: 500 - (mainPinHeight),
-    BOTTOM: 150 - (mainPinHeight),
+    TOP: 500 - mainPinHeight,
+    BOTTOM: 150 - mainPinHeight,
     LEFT: 0,
     RIGHT: map.clientWidth
   };
@@ -164,8 +164,8 @@
         currentCoords.x = PinConstrains.RIGHT;
       }
 
-      pinMain.style.top = (currentCoords.y) + 'px';
-      pinMain.style.left = (currentCoords.x) + 'px';
+      pinMain.style.top = currentCoords.y + 'px';
+      pinMain.style.left = currentCoords.x + 'px';
 
       offsetX = pinMain.offsetLeft;
       offsetY = pinMain.offsetTop + mainPinHeight;
