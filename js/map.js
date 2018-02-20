@@ -14,7 +14,7 @@
   var MainPinParams = {
     WIDTH: 64,
     HEIGHT: 64,
-    ARROW_HEIGHT: 22
+    ARROW_HEIGHT: 16
   };
 
   var map = document.querySelector('.map');
@@ -23,20 +23,21 @@
   var noticeFields = form.querySelectorAll('.form__element');
   var pinMain = mapPins.querySelector('.map__pin--main');
   var pins = [];
+  var mainPinHeight = MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
 
   /**
    * Specifying map boundaries
    * @enum {number} PinConstrains
    */
   var PinConstrains = {
-    TOP: 500 - (MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT),
-    BOTTOM: 150 - (MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT),
+    TOP: 500 - (mainPinHeight),
+    BOTTOM: 150 - (mainPinHeight),
     LEFT: 0,
     RIGHT: map.clientWidth
   };
 
   var offsetX = pinMain.offsetLeft;
-  var offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
+  var offsetY = pinMain.offsetTop + mainPinHeight;
 
   var primaryOffsetX = pinMain.offsetLeft;
   var primaryOffsetY = pinMain.offsetTop;
@@ -87,7 +88,7 @@
    * Reset map to original state
    */
   var resetMap = function () {
-    window.form.fillAddress(primaryOffsetX, primaryOffsetY + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT);
+    window.form.fillAddress(primaryOffsetX, primaryOffsetY + mainPinHeight);
     pinMain.style.left = primaryOffsetX + 'px';
     pinMain.style.top = primaryOffsetY + 'px';
     deletePins();
@@ -167,7 +168,7 @@
       pinMain.style.left = (currentCoords.x) + 'px';
 
       offsetX = pinMain.offsetLeft;
-      offsetY = pinMain.offsetTop + MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
+      offsetY = pinMain.offsetTop + mainPinHeight;
 
       window.form.fillAddress(offsetX, offsetY);
     };
