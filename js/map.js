@@ -24,6 +24,7 @@
   var pinMain = mapPins.querySelector('.map__pin--main');
   var pins = [];
   var mainPinHeight = MainPinParams.HEIGHT * 0.5 + MainPinParams.ARROW_HEIGHT;
+  var pageActivated = true;
 
   /**
    * Specifying map boundaries
@@ -88,6 +89,7 @@
    * Reset map to original state
    */
   var resetMap = function () {
+    pageActivated = true;
     pinMain.style.left = primaryOffsetX + 'px';
     pinMain.style.top = primaryOffsetY + 'px';
     deletePins();
@@ -104,6 +106,7 @@
    * Get active map and form
    */
   var enableMap = function () {
+    pageActivated = false;
     mapPins.appendChild(fragment);
 
     map.classList.remove('map--faded');
@@ -176,7 +179,9 @@
     };
 
     var pinMainMouseUpHandler = function () {
-      enableMap();
+      if (pageActivated) {
+        enableMap();
+      }
       pinMain.style.cursor = 'move';
 
       document.removeEventListener('mousemove', pinMainMouseMoveHandler);
