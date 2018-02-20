@@ -39,7 +39,7 @@
   var offsetX = pinMain.offsetLeft;
   var offsetY = pinMain.offsetTop + mainPinHeight;
 
-  var primaryOffsetX = pinMain.offsetLeft;
+  var primaryOffsetX = offsetX;
   var primaryOffsetY = pinMain.offsetTop;
 
   window.form.fillAddress(offsetX, offsetY);
@@ -88,12 +88,14 @@
    * Reset map to original state
    */
   var resetMap = function () {
-    window.form.fillAddress(primaryOffsetX, primaryOffsetY + mainPinHeight);
     pinMain.style.left = primaryOffsetX + 'px';
     pinMain.style.top = primaryOffsetY + 'px';
     deletePins();
     map.classList.add('map--faded');
     form.classList.add('notice__form--disabled');
+    window.form.fillAddress(primaryOffsetX, primaryOffsetY + mainPinHeight);
+    offsetX = primaryOffsetX;
+    offsetY = primaryOffsetY + mainPinHeight;
   };
 
   var fragment = createPins(generateAdArray());
