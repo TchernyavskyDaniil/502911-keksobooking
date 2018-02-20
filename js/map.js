@@ -126,6 +126,11 @@
 
     pinMain.style.cursor = 'none';
 
+    /**
+     * Controls the action of 'drag' the main pin of the map
+     * Movement of  pin is tied to the cursor
+     * @param {Event} moveEvt
+     */
     var pinMainMouseMoveHandler = function (moveEvt) {
       var shift = {
         x: startCoords.x - moveEvt.clientX,
