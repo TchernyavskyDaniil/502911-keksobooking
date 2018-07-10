@@ -85,7 +85,7 @@
   <div class="notice">
     <h2 class="notice__title">Ваше объявление</h2>
 
-    <form class="notice__form notice__form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
+    <form class="notice__form notice__form--disabled" method="post" enctype="multipart/form-data" autocomplete="off" action="https://js.dump.academy/keksobooking">
       <fieldset class="notice__header">
         <legend>Ваша фотография (для карты)</legend>
         <div class="notice__photo">
@@ -102,12 +102,12 @@
 
       <fieldset class="form__element form__element--wide">
         <label for="title">Заголовок объявления</label>
-        <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+        <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио" required minlength="30" maxlength="100">
       </fieldset>
 
       <fieldset class="form__element form__element--wide">
         <label for="address">Адрес</label>
-        <input id="address" name="address" type="text">
+        <input id="address" name="address" type="text" readonly required>
       </fieldset>
 
       <fieldset class="form__element">
@@ -122,7 +122,7 @@
 
       <fieldset class="form__element">
         <label for="price">Цена за ночь, руб.</label>
-        <input id="price" name="price" type="number" placeholder="5000">
+        <input id="price" name="price" type="number" placeholder="5000" required min="0" max="1000000">
       </fieldset>
 
       <fieldset class="form__element">
@@ -226,17 +226,11 @@
     <p><small>102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3</small></p>
     <p class="popup__price">5200&#x20bd;/ночь</p>
     <h4>Квартира</h4>
-    <p>2 комнаты для 3 гостей</p>
-    <p>Заезд после 14:00, выезд до 10:00</p>
+    <p class="popup__room">2 комнаты для 3 гостей</p>
+    <p class="popup__check">Заезд после 14:00, выезд до 10:00</p>
     <ul class="popup__features">
-      <li class="feature feature--wifi"></li>
-      <li class="feature feature--dishwasher"></li>
-      <li class="feature feature--parking"></li>
-      <li class="feature feature--washer"></li>
-      <li class="feature feature--elevator"></li>
-      <li class="feature feature--conditioner"></li>
     </ul>
-    <p>Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.</p>
+    <p class="popup__description">Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.</p>
     <ul class="popup__pictures">
       <li><img src=""></li>
     </ul>
@@ -244,6 +238,11 @@
 
   <button style="left: 200px; top: 400px;" class="map__pin"><img src="img/avatars/user07.png" width="40" height="40" draggable="false"></button>
 </template>
-
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/pin.js"></script>
+<script src="js/card.js"></script>
+<script src="js/form.js"></script>
+<script src="js/map.js"></script>
 </body>
 </html>
